@@ -35,7 +35,8 @@ public class ChatGUIUAListener extends KeyAdapter{
 	@Override
 	public void keyPressed(KeyEvent event) {
 		
-		if(event.getKeyCode()==10){				
+		if(event.getKeyCode()==10){	
+			event.consume();
 			JTextArea userArea=chatGui.getUa();	
 			String messageTobeSent=userArea.getText();
 			userArea.setText("");			
