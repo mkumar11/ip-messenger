@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -13,6 +14,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.gui.MainGui;
+import com.ymd.gui.util.GUIUtil;
 
 /**
  * This is the thread which runs the chat client 
@@ -23,10 +26,12 @@ import com.ymd.gui.ChatGui;
  */
 public class ChatClient implements Runnable{	
 	
-	String ip;
+	private String ip;
+	private MainGui mainGui;
 	
-	public ChatClient(String ip){		
+	public ChatClient(String ip,MainGui mainGui){		
 		this.ip=ip;
+		this.mainGui=mainGui;
 	}
 	
 
@@ -36,12 +41,15 @@ public class ChatClient implements Runnable{
 		InputStream in=null;
 		OutputStream out=null;
 		try{
+			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
+					"Establishing Connection. Please Wait...");
 			socket=new Socket(ip,1986);
 			InetAddress recipentAddr=socket.getInetAddress();
 			String recipentIp=recipentAddr.getHostAddress();
 			String recipentName=recipentAddr.getHostName();
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
+			statusFrame.dispose();
 			ChatGui chat=new ChatGui(recipentIp+":-IPMessenger",out);
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();

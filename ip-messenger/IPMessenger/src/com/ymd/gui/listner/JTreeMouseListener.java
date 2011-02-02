@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.ymd.gui.MainGui;
 import com.ymd.net.ChatClient;
 
 /**
@@ -18,6 +19,12 @@ import com.ymd.net.ChatClient;
  *
  */
 public class JTreeMouseListener extends MouseAdapter{
+	
+	private MainGui mainGui;
+	
+	public JTreeMouseListener(MainGui mainGui){
+		this.mainGui=mainGui;
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e){
@@ -27,7 +34,7 @@ public class JTreeMouseListener extends MouseAdapter{
 			String ip=node.getUserObject().toString();
 			String tok[]=ip.split("\\.");
 			if (tok.length==4){
-				Thread client=new Thread(new ChatClient(ip));
+				Thread client=new Thread(new ChatClient(ip,mainGui));
 				client.start();
 			}
 		}

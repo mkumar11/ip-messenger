@@ -43,7 +43,7 @@ public class MainGui extends JFrame{
 		dp.setLayout(new BorderLayout());
 		top =new DefaultMutableTreeNode("All Online Systems..");		
 		mainTree=new JTree(top);		
-		mainTree.addMouseListener(new JTreeMouseListener());
+		mainTree.addMouseListener(new JTreeMouseListener(this));
 		JScrollPane mtsp=new JScrollPane(mainTree);
 		dp.add(mtsp,BorderLayout.CENTER);
 		this.setContentPane(dp);
