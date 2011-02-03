@@ -15,7 +15,7 @@ import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
-import com.ymd.gui.util.GUIUtil;
+import com.ymd.util.GUIUtil;
 
 /**
  * This is the thread which runs the chat client 
