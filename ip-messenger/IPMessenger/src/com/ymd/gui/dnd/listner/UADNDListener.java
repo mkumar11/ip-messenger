@@ -14,11 +14,24 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import com.ymd.net.ft.FileClient;
+
 /**
  * @author yaragamu
  *
  */
 public class UADNDListener extends DropTargetAdapter{
+	
+	private String ip;
+	
+	/**
+	 * constructs UADNDListener object.
+	 * 
+	 * @param ip - destination IP address.
+	 */
+	public UADNDListener(String ip){
+		this.ip=ip;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -30,8 +43,9 @@ public class UADNDListener extends DropTargetAdapter{
 				List<File> fileList = (List<File>)transferable.getTransferData(DataFlavor.javaFileListFlavor);
 				Iterator<File> iterator = fileList.iterator();
 				while (iterator.hasNext()) {
-					File f = iterator.next();
-					System.out.println(f);
+					File file = iterator.next();
+					Thread fileClient=new Thread(new FileClient(ip,file));
+					fileClient.start();					
 				}
 				event.getDropTargetContext().dropComplete(true);
 			} else if (transferable.isDataFlavorSupported (DataFlavor.stringFlavor)){

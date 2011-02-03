@@ -26,8 +26,7 @@ public class ChatGui extends JFrame {
 	private static final long serialVersionUID = 4942132120249803370L;
 	
 	private JTextPane ma;
-	private JTextArea ua;
-	
+	private JTextArea ua;	
 	
 	private final OutputStream out;
 	
@@ -37,8 +36,8 @@ public class ChatGui extends JFrame {
 	 * @param title
 	 * @param out
 	 */
-	public ChatGui(String title,final OutputStream out){
-		super(title);
+	public ChatGui(String ip,final OutputStream out){
+		super(ip+":-IPMessenger");
 		this.out=out;
 		JDesktopPane dp=new JDesktopPane();
 		dp.setLayout(null);
@@ -65,7 +64,7 @@ public class ChatGui extends JFrame {
 		ua.setLineWrap(true);
 		ua.setWrapStyleWord(true);
 		ua.addKeyListener(new ChatGUIUAListener(this));
-		new DropTarget(ua,new UADNDListener());
+		new DropTarget(ua,new UADNDListener(ip));
 		JScrollPane jspua=new JScrollPane(ua);		
 		jspua.setBounds(0, 300, 250, 100);		
 		dp.add(jspua);		

@@ -21,6 +21,11 @@ public class FileSocketHandler implements Runnable{
 	
 	private Socket fileSocket;
 	
+	/**
+	 * Constructs the FileSocketHadler object.
+	 * 
+	 * @param fileSocket - The socket it has to handle.
+	 */
 	public FileSocketHandler(Socket fileSocket){
 		this.fileSocket=fileSocket;
 	}

@@ -20,7 +20,13 @@ public class FileClient implements Runnable{
 	
 	private File file;
 	private String ip;
-
+ 
+	/**
+	 * Constructs the FileClient object.
+	 * 
+	 * @param ip - IP address of the destination.
+	 * @param file - The files which has to be transfered.
+	 */
 	public FileClient(String ip,File file){
 		this.ip=ip;
 		this.file=file;

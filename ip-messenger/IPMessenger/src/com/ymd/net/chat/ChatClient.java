@@ -29,6 +29,12 @@ public class ChatClient implements Runnable{
 	private String ip;
 	private MainGui mainGui;
 	
+	/**
+	 * Constructs ChatClient object.
+	 * 
+	 * @param ip - destination IP address.
+	 * @param mainGui - the mainGui of the application.
+	 */
 	public ChatClient(String ip,MainGui mainGui){		
 		this.ip=ip;
 		this.mainGui=mainGui;
@@ -50,7 +56,7 @@ public class ChatClient implements Runnable{
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
 			statusFrame.dispose();
-			ChatGui chat=new ChatGui(recipentIp+":-IPMessenger",out);
+			ChatGui chat=new ChatGui(recipentIp,out);
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();
 			SimpleAttributeSet bold=new SimpleAttributeSet();
