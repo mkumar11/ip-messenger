@@ -16,6 +16,7 @@ import javax.swing.tree.DefaultTreeModel;
 import com.ymd.gui.MainGui;
 import com.ymd.net.Packets;
 import com.ymd.net.chat.ChatServer;
+import com.ymd.net.ft.FileServer;
 import com.ymd.util.Util;
 
 
@@ -35,8 +36,10 @@ public class IPMessenger {
 		try{
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			Map<String,DefaultMutableTreeNode> nodeMap=new HashMap<String,DefaultMutableTreeNode>();
-			Thread server=new Thread(new ChatServer());
-			server.start();
+			Thread chatServer=new Thread(new ChatServer());
+			chatServer.start();
+			Thread fileServer=new Thread(new FileServer());
+			fileServer.start();
 			MulticastSocket multicastSoc=new MulticastSocket(1988); 
 			InetAddress group = InetAddress.getByName("225.5.6.4");
 			multicastSoc.joinGroup(group);

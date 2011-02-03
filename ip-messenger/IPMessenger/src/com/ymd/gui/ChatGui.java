@@ -1,5 +1,6 @@
 package com.ymd.gui;
 
+import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
+import com.ymd.gui.dnd.listner.UADNDListener;
 import com.ymd.gui.listner.ChatGUIUAListener;
 
 /**
@@ -59,9 +61,11 @@ public class ChatGui extends JFrame {
 		
 		ua=new JTextArea();
 		ua.setToolTipText("Enter your chat message here...");
+		ua.setDragEnabled(true);
 		ua.setLineWrap(true);
 		ua.setWrapStyleWord(true);
 		ua.addKeyListener(new ChatGUIUAListener(this));
+		new DropTarget(ua,new UADNDListener());
 		JScrollPane jspua=new JScrollPane(ua);		
 		jspua.setBounds(0, 300, 250, 100);		
 		dp.add(jspua);		
