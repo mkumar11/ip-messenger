@@ -64,7 +64,7 @@ public class ChatGui extends JFrame {
 		ua.setLineWrap(true);
 		ua.setWrapStyleWord(true);
 		ua.addKeyListener(new ChatGUIUAListener(this));
-		new DropTarget(ua,new UADNDListener(ip));
+		new DropTarget(ua,new UADNDListener(ip,this));
 		JScrollPane jspua=new JScrollPane(ua);		
 		jspua.setBounds(0, 300, 250, 100);		
 		dp.add(jspua);		
