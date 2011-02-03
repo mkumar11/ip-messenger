@@ -1,4 +1,4 @@
-package com.ymd.net;
+package com.ymd.net.chat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,11 +20,11 @@ import com.ymd.gui.ChatGui;
  * @author yaragalla Muralidhar.
  *
  */
-public class TSocketHandler implements Runnable{
+public class CSSocketHandler implements Runnable{
 	
 	private Socket socket;
 	
-	public TSocketHandler(Socket socket){
+	public CSSocketHandler(Socket socket){
 		this.socket=socket;
 	}
 

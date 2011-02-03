@@ -10,7 +10,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.ymd.gui.MainGui;
-import com.ymd.net.ChatClient;
+import com.ymd.net.chat.ChatClient;
 
 /**
  * This is the Listener class for Main Gui's JTree component.

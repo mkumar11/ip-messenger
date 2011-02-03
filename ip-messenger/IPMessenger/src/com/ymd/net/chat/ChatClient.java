@@ -1,4 +1,4 @@
-package com.ymd.net;
+package com.ymd.net.chat;
 
 import java.io.IOException;
 import java.io.InputStream;

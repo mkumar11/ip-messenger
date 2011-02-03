@@ -14,8 +14,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import com.ymd.gui.MainGui;
-import com.ymd.net.ChatServer;
 import com.ymd.net.Packets;
+import com.ymd.net.chat.ChatServer;
 import com.ymd.util.Util;
 
 
