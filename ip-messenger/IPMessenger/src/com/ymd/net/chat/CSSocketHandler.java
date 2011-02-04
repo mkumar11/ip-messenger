@@ -71,6 +71,7 @@ public class CSSocketHandler implements Runnable{
 						try{
 							doc.insertString(doc.getLength(), clientName+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
+							mainArea.setCaretPosition(doc.getLength());
 						}catch(BadLocationException ble){
 							System.out.println(ble);
 						}					

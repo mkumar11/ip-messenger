@@ -83,6 +83,7 @@ public class ChatClient implements Runnable{
 					try{
 						doc.insertString(doc.getLength(), recipentName+" : ",bold);
 						doc.insertString(doc.getLength(), msg.toString()+"\n",null);
+						mainArea.setCaretPosition(doc.getLength());
 					}catch(BadLocationException ble){
 						System.out.println(ble);
 					}					

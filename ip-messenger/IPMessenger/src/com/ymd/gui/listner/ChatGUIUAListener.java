@@ -52,6 +52,7 @@ public class ChatGUIUAListener extends KeyAdapter{
 			try{
 				doc.insertString(doc.getLength(), "Me : ",bold);
 				doc.insertString(doc.getLength(), messageTobeSent+"\n",null);
+				mainArea.setCaretPosition(doc.getLength());
 			}catch(BadLocationException ble){
 				System.out.println(ble);
 			}			
@@ -66,6 +67,7 @@ public class ChatGUIUAListener extends KeyAdapter{
 					"continue intiate a \nchat again by opening a " +
 					"new chat window.";
 					doc.insertString(doc.getLength(),msg+"\n",null);
+					mainArea.setCaretPosition(doc.getLength());
 				}catch(BadLocationException ble){
 					System.out.println(ble);
 				}				
