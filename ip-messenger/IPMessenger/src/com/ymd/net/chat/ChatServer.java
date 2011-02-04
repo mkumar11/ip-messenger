@@ -9,7 +9,7 @@ import java.net.Socket;
  * This is the thread which runs the chat server.
  * 
  * @author yaragalla Muralidhar.
- *
+ * 
  */
 public class ChatServer implements Runnable{	
 
@@ -23,7 +23,7 @@ public class ChatServer implements Runnable{
 				t.start();
 			}
 		}catch(IOException ioe){
-			System.out.println(ioe);
+			ioe.printStackTrace();
 		}
 	}
 	

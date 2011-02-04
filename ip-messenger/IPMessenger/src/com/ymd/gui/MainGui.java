@@ -20,7 +20,7 @@ import com.ymd.net.Packets;
  * This is the main GUI window.
  * 
  * @author yaragalla Muralidhar
- *
+ *  
  */
 public class MainGui extends JFrame{
 
@@ -32,9 +32,10 @@ public class MainGui extends JFrame{
 	/**
 	 * This constructor configures and creates the main 
 	 * GUI Interface for the chat application.
-	 * @param title
-	 * @param multicastSoc
-	 * @param group
+	 * 
+	 * @param title - title of this instance.
+	 * @param multicastSoc - multicast socket.
+	 * @param group - broadcasting group.
 	 */
 	public MainGui(String title,final MulticastSocket multicastSoc, final InetAddress group){
 		super(title);
@@ -50,7 +51,7 @@ public class MainGui extends JFrame{
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				try{
-					Packets.sendGoodbyePacket(multicastSoc, group);
+					Packets.fireGoodbyePacket(multicastSoc, group);
 					multicastSoc.leaveGroup(group);
 				}catch(IOException ioe){
 					System.out.println(ioe);

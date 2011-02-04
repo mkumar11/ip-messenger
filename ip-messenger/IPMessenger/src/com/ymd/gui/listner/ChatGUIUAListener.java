@@ -28,6 +28,11 @@ public class ChatGUIUAListener extends KeyAdapter{
 	
 	private ChatGui chatGui;
 	
+	/**
+	 * Constructs ChatGUIUAListener instance.
+	 * 
+	 * @param chatGui - ChatGui.
+	 */
 	public ChatGUIUAListener(ChatGui chatGui){
 		this.chatGui=chatGui;
 	}
@@ -64,8 +69,7 @@ public class ChatGUIUAListener extends KeyAdapter{
 				}catch(BadLocationException ble){
 					System.out.println(ble);
 				}				
-			}		
-			
+			}			
 		}		
 	}	
 }

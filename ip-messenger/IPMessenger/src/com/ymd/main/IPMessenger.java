@@ -13,6 +13,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
 import com.ymd.net.Packets;
 import com.ymd.net.chat.ChatServer;
@@ -24,9 +25,15 @@ import com.ymd.util.Util;
  * This is the main class for IPMessenger.
  * 
  * @author Muralidhar Yaragalla
- *
+ * 
  */
 public class IPMessenger {
+	
+	/**
+	 * Holds all the ChatGui Instances.
+	 */
+	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>(); 
+	
 
 	/**
 	 * This is the Main method.
@@ -49,7 +56,7 @@ public class IPMessenger {
 			DefaultMutableTreeNode top=gi.getTop();
 			boolean firsttime=true;			
 			
-			Packets.sendIntialPacket(multicastSoc,group);
+			Packets.fireHelloPacket(multicastSoc,group);
 			while(true){
 				byte[] buf = new byte[68];
 				 DatagramPacket recv = new DatagramPacket(buf, buf.length);
@@ -63,8 +70,8 @@ public class IPMessenger {
 				 String[] tok=pack.split("&");				 
 				 if(tok[0].equalsIgnoreCase("hello")){					 
 					 String ip=Util.removePadding(tok[1]);				 
-					 if(!Util.localHost(ip)){
-						 Packets.sendHandShakePacket(multicastSoc,group);
+					 if(!Util.localHost(ip)){ 
+						 Packets.fireHandShakePacket(multicastSoc,group);
 						 if(!nodeMap.containsKey(ip)){
 							 String name="HostName: "+Util.removePadding(tok[2]);
 							 String user="UserName: "+Util.removePadding(tok[3]);						 

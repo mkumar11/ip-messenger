@@ -22,14 +22,14 @@ public class Packets {
 	
 	
 	/**
-	 * This sends the initial packet to say that this host
-	 * come live for chatting.
+	 * This sends the hello packet to say that this host
+	 * come live for chatt.
 	 * @param multicastSoc
 	 * @param group
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public static void sendIntialPacket(MulticastSocket multicastSoc,InetAddress group)
+	public static void fireHelloPacket(MulticastSocket multicastSoc,InetAddress group)
 										throws UnknownHostException,IOException{		
 		InetAddress localHost=InetAddress.getLocalHost();
 		String local=localHost.getHostAddress();
@@ -51,7 +51,7 @@ public class Packets {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public static void sendHandShakePacket(MulticastSocket multicastSoc,InetAddress group)
+	public static void fireHandShakePacket(MulticastSocket multicastSoc,InetAddress group)
 					throws UnknownHostException,IOException{		
 		InetAddress localHost=InetAddress.getLocalHost();
 		String local=localHost.getHostAddress();
@@ -72,7 +72,7 @@ public class Packets {
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public static void sendGoodbyePacket(MulticastSocket multicastSoc,InetAddress group)
+	public static void fireGoodbyePacket(MulticastSocket multicastSoc,InetAddress group)
 						throws UnknownHostException,IOException{		
 		InetAddress localHost=InetAddress.getLocalHost();
 		String local=localHost.getHostAddress();

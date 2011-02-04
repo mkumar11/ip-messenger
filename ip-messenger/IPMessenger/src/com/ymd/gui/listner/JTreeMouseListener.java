@@ -16,12 +16,16 @@ import com.ymd.net.chat.ChatClient;
  * This is the Listener class for Main Gui's JTree component.
  * 
  * @author yaragalla Muralidhar.
- *
  */
 public class JTreeMouseListener extends MouseAdapter{
 	
 	private MainGui mainGui;
 	
+	/**
+	 * Constructs JTreeMouseListener instance.
+	 * 
+	 * @param mainGui - MainGui.
+	 */
 	public JTreeMouseListener(MainGui mainGui){
 		this.mainGui=mainGui;
 	}

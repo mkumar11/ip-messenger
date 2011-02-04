@@ -15,6 +15,7 @@ import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
+import com.ymd.util.GUID;
 import com.ymd.util.GUIUtil;
 
 /**
@@ -50,23 +51,32 @@ public class ChatClient implements Runnable{
 			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
 					"Establishing Connection. Please Wait...");
 			socket=new Socket(ip,1986);
-			InetAddress recipentAddr=socket.getInetAddress();
-			String recipentIp=recipentAddr.getHostAddress();
+			InetAddress recipentAddr=socket.getInetAddress();			
 			String recipentName=recipentAddr.getHostName();
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
+			String chatId=GUID.generateId();
+			
+			//sending the same id to the destination IP.
+			out.write(chatId.getBytes());
+			out.write(-2);
+			
 			statusFrame.dispose();
-			ChatGui chat=new ChatGui(recipentIp,out);
+			ChatGui chat=new ChatGui(recipentAddr,out);			
+			chat.setId(chatId);
+			chat.setVisible(true);
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();
 			SimpleAttributeSet bold=new SimpleAttributeSet();
 			StyleConstants.setBold(bold, true);
 			StringBuffer msg=new StringBuffer();
 			while(true){
-				int value=in.read();				 
-				if(value==255)
+				int value=in.read();	
+				
+				if(value==-1)
 					break;
-				if(value !=254){
+				
+				if(((byte)value) !=-2){
 					char ch=(char)value;
 					msg.append(ch);
 				}else{
@@ -81,15 +91,14 @@ public class ChatClient implements Runnable{
 				
 			}
 		}catch(Exception ioe){
-			System.out.println(ioe);
+			ioe.printStackTrace();
 		}finally{
-			try{
-				out.write(-1);
+			try{				
 				in.close();
 				out.close();
 				socket.close();	
 			}catch(IOException ioe){
-				System.out.println(ioe);
+				ioe.printStackTrace();
 			}
 		}
 		

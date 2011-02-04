@@ -6,8 +6,21 @@ import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
+/**
+ * Simple GUI utilities class.
+ * 
+ * @author yaragalla Muralidhar.
+ * 
+ */
 public class GUIUtil {
 	
+	/**
+	 * creates a non decorated JFrame to display simple messages.
+	 * @param x - x position on screen.
+	 * @param y - y position on screen.
+	 * @param msg - message that is to be displayed.
+	 * @return JFrame.
+	 */
 	public static JFrame displayMessage(int x,int y,String msg){
 		JFrame frame=new JFrame();
 		JDesktopPane dp=new JDesktopPane();

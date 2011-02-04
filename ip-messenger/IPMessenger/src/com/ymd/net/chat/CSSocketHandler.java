@@ -24,6 +24,11 @@ public class CSSocketHandler implements Runnable{
 	
 	private Socket socket;
 	
+	/**
+	 * Constructs CSSocketHandler instance.
+	 * 
+	 * @param socket - Socket.
+	 */
 	public CSSocketHandler(Socket socket){
 		this.socket=socket;
 	}
@@ -38,44 +43,68 @@ public class CSSocketHandler implements Runnable{
 		try{			
 			is=socket.getInputStream();			
 			out=socket.getOutputStream();	
-			InetAddress clientAddr=socket.getInetAddress();
-			String clientIp=clientAddr.getHostAddress();
+			InetAddress clientAddr=socket.getInetAddress();			
 			String clientName=clientAddr.getHostName();
-			ChatGui chat=new ChatGui(clientIp+":-"+"IPMessenger",out);
+			ChatGui chat=new ChatGui(clientAddr,out);
 			JTextPane mainArea=chat.getMa();
-			Document doc=mainArea.getDocument();
+			Document doc=mainArea.getDocument();			
 			SimpleAttributeSet bold=new SimpleAttributeSet();
 			StyleConstants.setBold(bold, true);
+			
 			StringBuffer msg=new StringBuffer();
+			StringBuffer id=new StringBuffer();
+			
+			boolean idValue=true;
+			boolean msgValue=false;
 			
 			while(true){									
-				int value=is.read();					
-				if(value==255)
+				int value=is.read();	
+				
+				if(value==-1)
 					break;
-				if(value !=254){
-					char ch=(char)value;
-					msg.append(ch);
-				}else{
-					try{
-						doc.insertString(doc.getLength(), clientName+" : ",bold);
-						doc.insertString(doc.getLength(), msg.toString()+"\n",null);
-					}catch(BadLocationException ble){
-						System.out.println(ble);
-					}					
-					msg=new StringBuffer();
-				}				
+				
+				if(msgValue){
+					if(((byte)value) !=-2){
+						char ch=(char)value;
+						msg.append(ch);
+					}else{
+						try{
+							doc.insertString(doc.getLength(), clientName+" : ",bold);
+							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
+						}catch(BadLocationException ble){
+							System.out.println(ble);
+						}					
+						msg=new StringBuffer();
+					}
+				}
+				
+				// collects the ID bytes.
+				if(idValue){
+					if(((byte)value)==-2){
+						chat.setId(id.toString());
+						chat.setVisible(true);
+						idValue=false;
+						msgValue=true;
+					}else{
+						char chr=(char)value;
+						id.append(chr);
+					}
+				}
 			}		
 			
-			out.write(-1);
-			is.close();
-			out.close();
-			socket.close();
+			
+			
 			
 		}catch(IOException ioe){
 			System.out.println(ioe);
-		}
-		
-	}
-
-	
+		}finally{
+			try{
+				is.close();
+				out.close();
+				socket.close();
+			}catch(IOException ioe){
+				ioe.printStackTrace();
+			}
+		}		
+	}	
 }

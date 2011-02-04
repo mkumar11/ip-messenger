@@ -27,7 +27,9 @@ import com.ymd.gui.ChatGui;
 import com.ymd.net.ft.FileClient;
 
 /**
- * @author yaragamu
+ * Drag and Drop Listener.
+ * 
+ * @author yaragalla Muralidhar.
  *
  */
 public class UADNDListener extends DropTargetAdapter{
@@ -39,6 +41,7 @@ public class UADNDListener extends DropTargetAdapter{
 	 * constructs UADNDListener object.
 	 * 
 	 * @param ip - destination IP address.
+	 * @param chatGui - chatGui.
 	 */
 	public UADNDListener(String ip,ChatGui chatGui){
 		this.ip=ip;
@@ -49,8 +52,7 @@ public class UADNDListener extends DropTargetAdapter{
 	@Override
 	public void drop(DropTargetDropEvent event) {
 		StyledDocument doc=(StyledDocument)chatGui.getMa().getDocument();
-		SimpleAttributeSet bold=new SimpleAttributeSet();
-		StyleConstants.setBold(bold, true);
+		
 		try {
 			Transferable transferable = event.getTransferable();
 			if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -60,19 +62,8 @@ public class UADNDListener extends DropTargetAdapter{
 				while (iterator.hasNext()) {
 					File file = iterator.next();
 					String simpleName=file.getName();
-					try{
-						doc.insertString(doc.getLength(), "Me : ",bold);
-						doc.insertString(doc.getLength(), simpleName+"\n",null);					
-						JPanel jp=new JPanel(new BorderLayout());				
-						JTextField jtf=new JTextField("Awaiting For File Transfer acceptance...");
-						jp.add(jtf,BorderLayout.CENTER);
-						Style style = doc.addStyle("StyleName", null);
-					    StyleConstants.setComponent(style, jp);
-					    doc.insertString(doc.getLength(), "ignored text"+"\n", style);					
-					}catch(BadLocationException ble){
-						ble.printStackTrace();
-					}
-					Thread fileClient=new Thread(new FileClient(ip,file));
+					StatusPanels panels=displayFTStatusMsg(doc,simpleName);
+					Thread fileClient=new Thread(new FileClient(ip,file,chatGui.getId(),panels));
 					fileClient.start();					
 				}
 				event.getDropTargetContext().dropComplete(true);
@@ -92,6 +83,63 @@ public class UADNDListener extends DropTargetAdapter{
 			event.rejectDrop();
 		}		
 	}
-
 	
+	/**
+	 * This method displays status panels in the associated chat GUI.
+	 * 
+	 * @param doc - styled document associated with the chat GUI Main Area. 
+	 * @param simpleFileName - file name with which this is associated to.
+	 * @return StatusPanels
+	 */
+	private StatusPanels displayFTStatusMsg(StyledDocument doc,String simpleFileName){
+		StatusPanels panels=new StatusPanels();
+		SimpleAttributeSet bold=new SimpleAttributeSet();
+		StyleConstants.setBold(bold, true);
+		try{
+			doc.insertString(doc.getLength(), "Me : ",bold);
+			doc.insertString(doc.getLength(), simpleFileName+"\n",null);					
+			JPanel statusPanel=new JPanel(new BorderLayout());				
+			JTextField jtf=new JTextField("Awaiting For File Transfer acceptance...");
+			jtf.setEditable(false);
+			statusPanel.add(jtf,BorderLayout.CENTER);
+			Style style = doc.addStyle("StyleName", null);
+		    StyleConstants.setComponent(style, statusPanel);
+		    doc.insertString(doc.getLength(), "ignored text"+"\n", style);	
+		    panels.setStatus(statusPanel);
+		    
+		    JPanel progressPanel=new JPanel(new BorderLayout());			
+			Style stylePP = doc.addStyle("StyleName", null);
+		    StyleConstants.setComponent(stylePP, progressPanel);
+		    doc.insertString(doc.getLength(), "ignored text"+"\n", stylePP);	
+		    panels.setProgress(progressPanel);
+		    
+		}catch(BadLocationException ble){
+			ble.printStackTrace();
+		}
+		
+		return panels;
+	}
+	
+	/**
+	 * Inner class used to holds the Status Panels.
+	 */
+	public static class StatusPanels{
+		
+		private JPanel status;
+		private JPanel progress;
+		
+		
+		public JPanel getStatus() {
+			return status;
+		}
+		public void setStatus(JPanel status) {
+			this.status = status;
+		}
+		public JPanel getProgress() {
+			return progress;
+		}
+		public void setProgress(JPanel progress) {
+			this.progress = progress;
+		}		
+	}	
 }
