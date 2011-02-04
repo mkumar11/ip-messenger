@@ -70,8 +70,8 @@ public class UADNDListener extends DropTargetAdapter{
 				event.getDropTargetContext().dropComplete(true);
 			} else if (transferable.isDataFlavorSupported (DataFlavor.stringFlavor)){
 				event.acceptDrop(DnDConstants.ACTION_COPY);
-				String s = (String)transferable.getTransferData ( DataFlavor.stringFlavor);
-				System.out.println(s);
+				String str = (String)transferable.getTransferData (DataFlavor.stringFlavor);
+				chatGui.getUa().append(str);				
 				event.getDropTargetContext().dropComplete(true);
 			}else{
 				event.rejectDrop();
