@@ -1,6 +1,8 @@
 package com.ymd.util;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -36,6 +38,56 @@ public class GUIUtil {
 		frame.setVisible(true);
 		frame.pack();
 		return frame;
+	}
+	
+	/**
+	 * Given component width and height it returns cords which 
+	 * can set the component at the mid of desktop.
+	 *  
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static CompCenterCords getCompCenterCords(int width,int height){
+		CompCenterCords cords=new CompCenterCords();
+		Toolkit toolkit=Toolkit.getDefaultToolkit();
+		Dimension dim=toolkit.getScreenSize();
+		int screenHeight=dim.height;
+		int screenWidth=dim.width;
+		int heightMidPoint=screenHeight/2;
+		int widthMidPoint=screenWidth/2;
+		int compX=widthMidPoint-(width/2);
+		cords.setX(compX);
+		int compY=heightMidPoint-(height/2);
+		cords.setY(compY);
+		return cords;
+	}
+	
+	/**
+	 * It holds desktop center cords.
+	 * 
+	 * @author Muralidhar Yaragalla.
+	 *
+	 */
+	public static class CompCenterCords{
+		private int x;
+		private int y;
+		
+		
+		public int getX() {
+			return x;
+		}
+		public void setX(int x) {
+			this.x = x;
+		}
+		public int getY() {
+			return y;
+		}
+		public void setY(int y) {
+			this.y = y;
+		}
+		
+		
 	}
 
 }

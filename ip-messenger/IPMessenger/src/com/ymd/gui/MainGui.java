@@ -15,6 +15,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.ymd.gui.listner.JTreeMouseListener;
 import com.ymd.net.Packets;
+import com.ymd.util.GUIUtil;
+import com.ymd.util.GUIUtil.CompCenterCords;
 
 /**
  * This is the main GUI window.
@@ -62,6 +64,8 @@ public class MainGui extends JFrame{
 		
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
 		this.setSize(200, 550);
+		CompCenterCords cords=GUIUtil.getCompCenterCords(200, 550);
+		this.setLocation(cords.getX(), cords.getY());
 		this.setVisible(true);
 	}
 
