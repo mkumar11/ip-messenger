@@ -1,12 +1,13 @@
 package com.ymd.util;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 
 /**
  * Simple GUI utilities class.
@@ -28,17 +29,20 @@ public class GUIUtil {
 		JDesktopPane dp=new JDesktopPane();
 		dp.setLayout(new BorderLayout());
 		
-		JTextField jft=new JTextField(msg);
+		JTextArea jft=new JTextArea(msg);
 		jft.setEditable(false);
+		jft.setBackground(Color.WHITE);
 		dp.add(jft,BorderLayout.CENTER);
 		
 		frame.setContentPane(dp);
 		frame.setUndecorated(true);
 		frame.setLocation((x+50), (y+100));
 		frame.setVisible(true);
+		frame.toFront();
 		frame.pack();
 		return frame;
-	}
+	}	
+	
 	
 	/**
 	 * Given component width and height it returns cords which 
@@ -85,9 +89,6 @@ public class GUIUtil {
 		}
 		public void setY(int y) {
 			this.y = y;
-		}
-		
-		
+		}		
 	}
-
 }

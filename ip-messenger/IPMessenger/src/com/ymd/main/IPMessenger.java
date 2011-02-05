@@ -1,12 +1,17 @@
 package com.ymd.main;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -15,10 +20,15 @@ import javax.swing.tree.DefaultTreeModel;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
+import com.ymd.images.Resource;
 import com.ymd.net.Packets;
 import com.ymd.net.chat.ChatServer;
 import com.ymd.net.ft.FileServer;
+import com.ymd.util.GUIUtil;
+import com.ymd.util.JLogoFrame;
+import com.ymd.util.NetUtil;
 import com.ymd.util.Util;
+import com.ymd.util.GUIUtil.CompCenterCords;
 
 
 /**
@@ -34,14 +44,29 @@ public class IPMessenger {
 	 */
 	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>(); 
 	
+	//static block which registers the cross look and feel.
+	static{
+		try{
+			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		}catch(UnsupportedLookAndFeelException ulfe){
+			System.out.println(ulfe);
+		}catch(IllegalAccessException ie){
+			System.out.println(ie);
+		}catch(InstantiationException instEx){
+			System.out.println(instEx);
+		}catch(ClassNotFoundException cnfe){
+			System.out.println(cnfe);
+		}
+	}
 
 	/**
 	 * This is the Main method.
 	 * @param args
 	 */
 	public static void main(String[] args) {		
-		try{
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+		try{			
+			intialCheck();
+			
 			Map<String,DefaultMutableTreeNode> nodeMap=new HashMap<String,DefaultMutableTreeNode>();
 			Thread chatServer=new Thread(new ChatServer());
 			chatServer.start();
@@ -145,14 +170,38 @@ public class IPMessenger {
 			}
 		}catch(IOException ioe){
 			System.out.println(ioe);
-		}catch(UnsupportedLookAndFeelException ulfe){
-			System.out.println(ulfe);
-		}catch(IllegalAccessException ie){
-			System.out.println(ie);
-		}catch(InstantiationException instEx){
-			System.out.println(instEx);
-		}catch(ClassNotFoundException cnfe){
-			System.out.println(cnfe);
+		}
+	}
+	
+	/**
+	 * It displays the IPMessenger logo and does initial check required.
+	 */
+	private static void intialCheck(){
+		URL url=Resource.class.getResource("logo.jpg");
+		JLogoFrame logoFrame=new JLogoFrame(url);
+		JProgressBar progress=logoFrame.getProgressBar();
+		progress.setMaximum(3);
+		boolean mainPort=NetUtil.isPortAvailable(1988);
+		progress.setValue(1);
+		boolean chatPort=NetUtil.isPortAvailable(1986);
+		progress.setValue(2);
+		boolean filePort=NetUtil.isPortAvailable(1984);
+		progress.setValue(3);
+		logoFrame.dispose();
+		if(!(mainPort && chatPort && filePort)){
+			JFrame errorFrame=GUIUtil.displayMessage(0, 0, "IPMessenger Error Mesage : " +
+					"Required Ports On The System Are Not Free. " +
+					"Exiting Application.\n\n");			
+			Dimension dim=errorFrame.getSize();
+			CompCenterCords cords=GUIUtil.getCompCenterCords(dim.width,dim.height);
+			errorFrame.setLocation(cords.getX(), cords.getY());
+			try{
+				Thread.sleep(10000);
+			}catch(InterruptedException ie){
+				ie.printStackTrace();
+			}
+			errorFrame.dispose();
+			System.exit(0);
 		}
 	}
 }
