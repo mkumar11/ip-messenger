@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -16,6 +17,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import com.ymd.gui.listner.JTreeMouseListener;
 import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
+import com.ymd.main.IPMessenger;
 import com.ymd.net.Packets;
 
 /**
@@ -49,8 +51,8 @@ public class MainGui extends JFrame{
 		mainTree.addMouseListener(new JTreeMouseListener(this));
 		JScrollPane mtsp=new JScrollPane(mainTree);
 		dp.add(mtsp,BorderLayout.CENTER);
-		this.setContentPane(dp);
-		this.addWindowListener(new WindowAdapter(){
+		setContentPane(dp);
+		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				try{
 					Packets.fireGoodbyePacket(multicastSoc, group);
@@ -62,11 +64,13 @@ public class MainGui extends JFrame{
 			}
 		});
 		
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
-		this.setSize(200, 550);
+		ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
+		setIconImage(icon.getImage());
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
+		setSize(200, 550);
 		CompCenterCords cords=GUIUtil.getCompCenterCords(200, 550);
-		this.setLocation(cords.getX(), cords.getY());
-		this.setVisible(true);
+		setLocation(cords.getX(), cords.getY());
+		setVisible(true);
 	}
 
 	public DefaultMutableTreeNode getTop() {

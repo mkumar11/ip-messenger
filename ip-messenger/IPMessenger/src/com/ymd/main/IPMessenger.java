@@ -1,6 +1,5 @@
 package com.ymd.main;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -42,7 +41,8 @@ public class IPMessenger {
 	/**
 	 * Holds all the ChatGui Instances.
 	 */
-	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>(); 
+	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>();
+	public static final URL iconUrl=Resource.class.getResource("logo.jpg");
 	
 	//static block which registers the cross look and feel.
 	static{

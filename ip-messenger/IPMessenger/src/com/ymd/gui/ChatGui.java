@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -96,11 +97,12 @@ public class ChatGui extends JFrame {
 		jspua.setBounds(0, 300, 250, 100);		
 		dp.add(jspua);		
 		
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
-		this.setSize(260, 450);		
+		ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
+		setIconImage(icon.getImage());
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
+		setSize(260, 450);		
 		CompCenterCords cords=GUIUtil.getCompCenterCords(260, 450);
-		this.setLocation(cords.getX(), cords.getY());
+		setLocation(cords.getX(), cords.getY());
 	}
 	
 	
