@@ -20,15 +20,15 @@ import javax.swing.tree.DefaultTreeModel;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
+import com.ymd.gui.util.GUIUtil;
+import com.ymd.gui.util.JLogoFrame;
+import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.images.Resource;
 import com.ymd.net.Packets;
 import com.ymd.net.chat.ChatServer;
 import com.ymd.net.ft.FileServer;
-import com.ymd.util.GUIUtil;
-import com.ymd.util.JLogoFrame;
 import com.ymd.util.NetUtil;
 import com.ymd.util.Util;
-import com.ymd.util.GUIUtil.CompCenterCords;
 
 
 /**

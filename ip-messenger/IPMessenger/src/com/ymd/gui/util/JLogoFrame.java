@@ -1,4 +1,4 @@
-package com.ymd.util;
+package com.ymd.gui.util;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -9,7 +9,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import com.ymd.util.GUIUtil.CompCenterCords;
+import com.ymd.gui.util.GUIUtil.CompCenterCords;
+
 
 /**
  * Create a JLogoFrame with the given image and a JProgressBar.

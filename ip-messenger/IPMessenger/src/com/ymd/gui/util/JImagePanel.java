@@ -1,4 +1,4 @@
-package com.ymd.util;
+package com.ymd.gui.util;
 
 import java.awt.Graphics;
 import java.awt.Image;

@@ -14,9 +14,9 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.ymd.gui.listner.JTreeMouseListener;
+import com.ymd.gui.util.GUIUtil;
+import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.net.Packets;
-import com.ymd.util.GUIUtil;
-import com.ymd.util.GUIUtil.CompCenterCords;
 
 /**
  * This is the main GUI window.

@@ -15,9 +15,9 @@ import javax.swing.JTextPane;
 
 import com.ymd.gui.dnd.listner.UADNDListener;
 import com.ymd.gui.listner.ChatGUIUAListener;
+import com.ymd.gui.util.GUIUtil;
+import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.main.IPMessenger;
-import com.ymd.util.GUIUtil;
-import com.ymd.util.GUIUtil.CompCenterCords;
 
 /**
  * This is the GUI class for chat window.
