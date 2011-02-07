@@ -34,7 +34,7 @@ import com.ymd.util.Util;
  * This is the main class for IPMessenger.
  * 
  * @author Muralidhar Yaragalla
- * Modified today.
+ * 
  */
 public class IPMessenger {
 	

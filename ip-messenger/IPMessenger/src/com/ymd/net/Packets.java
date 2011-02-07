@@ -17,7 +17,6 @@ import com.ymd.util.Util;
  * 
  * @author yaragalla Muralidhar.
  * 
- * modified today
  */
 public class Packets {
 	
