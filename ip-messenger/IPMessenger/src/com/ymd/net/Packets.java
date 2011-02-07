@@ -16,7 +16,8 @@ import com.ymd.util.Util;
  * for this chat application.
  * 
  * @author yaragalla Muralidhar.
- *
+ * 
+ * modified today
  */
 public class Packets {
 	
@@ -31,14 +32,10 @@ public class Packets {
 	 */
 	public static void fireHelloPacket(MulticastSocket multicastSoc,InetAddress group)
 										throws UnknownHostException,IOException{		
-		InetAddress localHost=InetAddress.getLocalHost();
-		String local=localHost.getHostAddress();
-		String finalLocal=Util.addPadding(local,20); 
-		String name=localHost.getHostName();
-		String finalName=Util.addPadding(name,20);
+		
 		String user=System.getProperty("user.name");
 		String finalUser=Util.addPadding(user,20);
-		String msg="hello"+"&"+finalLocal+"&"+finalName+"&"+finalUser;
+		String msg="hello"+"&"+finalUser;
 		DatagramPacket intPacket = new DatagramPacket(msg.getBytes(), msg.length(),group, 1988);
 		multicastSoc.send(intPacket);
 	}
@@ -53,14 +50,10 @@ public class Packets {
 	 */
 	public static void fireHandShakePacket(MulticastSocket multicastSoc,InetAddress group)
 					throws UnknownHostException,IOException{		
-		InetAddress localHost=InetAddress.getLocalHost();
-		String local=localHost.getHostAddress();
-		String finalLocal=Util.addPadding(local,20); 
-		String name=localHost.getHostName();
-		String finalName=Util.addPadding(name,20);
+		
 		String user=System.getProperty("user.name");
 		String finalUser=Util.addPadding(user,20);
-		String msg="hands"+"&"+finalLocal+"&"+finalName+"&"+finalUser;
+		String msg="hands"+"&"+finalUser;
 		DatagramPacket intPacket = new DatagramPacket(msg.getBytes(), msg.length(),group, 1988);
 		multicastSoc.send(intPacket);
 	}
@@ -74,14 +67,10 @@ public class Packets {
 	 */
 	public static void fireGoodbyePacket(MulticastSocket multicastSoc,InetAddress group)
 						throws UnknownHostException,IOException{		
-		InetAddress localHost=InetAddress.getLocalHost();
-		String local=localHost.getHostAddress();
-		String finalLocal=Util.addPadding(local,20); 
-		String name=localHost.getHostName();
-		String finalName=Util.addPadding(name,20);
+		
 		String user=System.getProperty("user.name");
 		String finalUser=Util.addPadding(user,20);
-		String msg="goodb"+"&"+finalLocal+"&"+finalName+"&"+finalUser;
+		String msg="goodb"+"&"+finalUser;
 		DatagramPacket intPacket = new DatagramPacket(msg.getBytes(), msg.length(),group, 1988);
 		multicastSoc.send(intPacket);
 	}

@@ -34,7 +34,7 @@ import com.ymd.util.Util;
  * This is the main class for IPMessenger.
  * 
  * @author Muralidhar Yaragalla
- * 
+ * Modified today.
  */
 public class IPMessenger {
 	
@@ -83,23 +83,25 @@ public class IPMessenger {
 			
 			Packets.fireHelloPacket(multicastSoc,group);
 			while(true){
-				byte[] buf = new byte[68];
+				byte[] buf = new byte[26];
 				 DatagramPacket recv = new DatagramPacket(buf, buf.length);
 				 multicastSoc.receive(recv);
+				 
 				 StringBuffer temp=new StringBuffer();
 				 for(int i=0;i<buf.length;i++){
 					 char chr=(char)buf[i];
 					 temp.append(chr);					
 				 }
 				 String pack=temp.toString();
-				 String[] tok=pack.split("&");				 
+				 String[] tok=pack.split("&");	
+				 InetAddress pacSenderAddr=recv.getAddress();
 				 if(tok[0].equalsIgnoreCase("hello")){					 
-					 String ip=Util.removePadding(tok[1]);				 
+					 String ip=pacSenderAddr.getHostAddress();			 
 					 if(!Util.localHost(ip)){ 
 						 Packets.fireHandShakePacket(multicastSoc,group);
 						 if(!nodeMap.containsKey(ip)){
-							 String name="HostName: "+Util.removePadding(tok[2]);
-							 String user="UserName: "+Util.removePadding(tok[3]);						 
+							 String name="HostName: "+pacSenderAddr.getHostName();
+							 String user="UserName: "+Util.removePadding(tok[1]);						 
 							 int existingNodes=top.getChildCount();
 
 							 DefaultMutableTreeNode ipNode=new DefaultMutableTreeNode(ip);							 
@@ -126,11 +128,11 @@ public class IPMessenger {
 				 }
 				 
 				 if(tok[0].equalsIgnoreCase("hands")){
-					 String ip=Util.removePadding(tok[1]);
+					 String ip=pacSenderAddr.getHostAddress();
 					 if(!Util.localHost(ip)){
 						 if(!nodeMap.containsKey(ip)){
-							 String name="HostName: "+Util.removePadding(tok[2]);
-							 String user="UserName: "+Util.removePadding(tok[3]);						 
+							 String name="HostName: "+pacSenderAddr.getHostName();
+							 String user="UserName: "+Util.removePadding(tok[1]);						 
 							 int existingNodes=top.getChildCount();
 							 
 							 DefaultMutableTreeNode ipNode=new DefaultMutableTreeNode(ip);							 
@@ -154,7 +156,7 @@ public class IPMessenger {
 				 }
 				 
 				 if(tok[0].equalsIgnoreCase("goodb")){
-					 String ip=Util.removePadding(tok[1]);
+					 String ip=pacSenderAddr.getHostAddress();
 					 if(!Util.localHost(ip)){
 						 DefaultMutableTreeNode node=nodeMap.get(ip); 
 						 if(node != null){
