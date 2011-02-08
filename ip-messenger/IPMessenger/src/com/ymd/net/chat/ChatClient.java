@@ -95,8 +95,10 @@ public class ChatClient implements Runnable{
 							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
 							mainArea.setCaretPosition(doc.getLength());
+							chat.setExtendedState(0);
+							chat.toFront();
 						}catch(BadLocationException ble){
-							System.out.println(ble);
+							ble.printStackTrace();
 						}					
 						msg=new StringBuffer();
 					}

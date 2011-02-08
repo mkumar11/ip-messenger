@@ -121,6 +121,8 @@ public class FileSocketHandler implements Runnable{
 						file=FileUtil.createNonExistingFile(fileName.toString());
 						panels=dispalyFTIntializationMsg(fileName.toString(),fsOutputStream);
 						associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa().getDocument().getLength());
+						associatedChatGui.setExtendedState(0);
+						associatedChatGui.toFront();
 						fileNameChar=false;
 						fileSizeChar=true;
 					}
