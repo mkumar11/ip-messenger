@@ -1,6 +1,16 @@
 package com.ymd.main;
 
+import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -9,6 +19,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.JTree;
@@ -49,13 +60,13 @@ public class IPMessenger {
 		try{
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		}catch(UnsupportedLookAndFeelException ulfe){
-			System.out.println(ulfe);
+			ulfe.printStackTrace();
 		}catch(IllegalAccessException ie){
-			System.out.println(ie);
+			ie.printStackTrace();
 		}catch(InstantiationException instEx){
-			System.out.println(instEx);
+			instEx.printStackTrace();
 		}catch(ClassNotFoundException cnfe){
-			System.out.println(cnfe);
+			cnfe.printStackTrace();
 		}
 	}
 
@@ -65,8 +76,7 @@ public class IPMessenger {
 	 */
 	public static void main(String[] args) {		
 		try{			
-			intialCheck();
-			
+			intialCheck();			
 			Map<String,DefaultMutableTreeNode> nodeMap=new HashMap<String,DefaultMutableTreeNode>();
 			Thread chatServer=new Thread(new ChatServer());
 			chatServer.start();
@@ -76,6 +86,7 @@ public class IPMessenger {
 			InetAddress group = InetAddress.getByName("225.5.6.4");
 			multicastSoc.joinGroup(group);
 			MainGui gi=new MainGui("IPMessenger",multicastSoc,group);
+			registerInSystemTray(gi,multicastSoc,group);
 			JTree mainTree=gi.getMainTree();
 			DefaultTreeModel treeModel=(DefaultTreeModel)mainTree.getModel();
 			DefaultMutableTreeNode top=gi.getTop();
@@ -173,7 +184,7 @@ public class IPMessenger {
 				 }
 			}
 		}catch(IOException ioe){
-			System.out.println(ioe);
+			ioe.printStackTrace();
 		}
 	}
 	
@@ -207,5 +218,48 @@ public class IPMessenger {
 			errorFrame.dispose();
 			System.exit(0);
 		}
+	}
+	
+	/**
+	 * Registers the application in the system tray.
+	 * 
+	 * @param mainGui - MainGui.
+	 * @param multicastSoc - MulticastSocket.
+	 * @param group - Broadcasting group IP.
+	 */
+	private static void registerInSystemTray(final MainGui mainGui,final MulticastSocket multicastSoc,final InetAddress group){
+		ImageIcon icon=new ImageIcon(iconUrl);
+		if (SystemTray.isSupported()) {
+			SystemTray tray = SystemTray.getSystemTray();
+			Image image =icon.getImage();
+			PopupMenu popup = new PopupMenu();
+			MenuItem exitItem = new MenuItem("Exit");
+			exitItem.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					try{
+						Packets.fireGoodbyePacket(multicastSoc, group);
+						multicastSoc.leaveGroup(group);
+					}catch(IOException ioe){
+						ioe.printStackTrace();
+					}
+					System.exit(0) ;
+	             }
+			});
+			popup.add(exitItem);
+			TrayIcon trayIcon=new TrayIcon(image,"IPMessenger",popup);
+			trayIcon.addMouseListener(new MouseAdapter(){
+				public void mouseClicked(MouseEvent e){
+					if(e.getClickCount()==2){
+						mainGui.setVisible(true);
+					}
+				}
+			});
+			try {
+	             tray.add(trayIcon);
+	         } catch (AWTException e) {
+	             e.printStackTrace();
+	         }
+		}
+		
 	}
 }
