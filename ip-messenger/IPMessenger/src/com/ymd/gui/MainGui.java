@@ -1,6 +1,7 @@
 package com.ymd.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -67,6 +69,18 @@ public class MainGui extends JFrame{
 		});
 		call.add(exit);
 		menuBar.add(call);
+		JMenu help=new JMenu("Help");
+		JMenuItem about=new JMenuItem("About IPMessenger");
+		final int x=getX();
+		final int y=getY();
+		about.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				About about=new About("About IPMessenger",x,y);
+				about.setVisible(true);
+			}
+		});
+		help.add(about);
+		menuBar.add(help);
 		setJMenuBar(menuBar);
 		
 		top =new DefaultMutableTreeNode("All Online Systems..");		
@@ -89,5 +103,32 @@ public class MainGui extends JFrame{
 
 	public JTree getMainTree() {
 		return mainTree;
+	}
+	
+	/**
+	 * This is a frame which displays info about IPMessenger.
+	 * 
+	 * @author Muralidhar Yaragalla.
+	 *
+	 */
+	private static class About extends JFrame{
+		
+		private static final long serialVersionUID = 247384236233249085L;
+
+		public About(String title,int x,int y){
+			super(title);
+			Container container=getContentPane();
+			container.setLayout(new BorderLayout());
+			JTextArea jta=new JTextArea();
+			jta.setText("\n\nCreator : Muralidhar Yaragalla.\nEmail : " +
+					"yaragallamurali@gmail.com\nCode Site : " +
+					"http://code.google.com/p/ip-messenger/ \n" +
+					"Version : 1.2");
+			jta.setEditable(false);
+			container.add(jta,BorderLayout.CENTER);
+			setSize(277, 277);
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);	
+			setLocation(x, y);			
+		}
 	}
 }
