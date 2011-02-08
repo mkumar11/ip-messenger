@@ -103,16 +103,17 @@ public class IPMessenger {
 							 String name="HostName: "+pacSenderAddr.getHostName();
 							 String user="UserName: "+Util.removePadding(tok[1]);						 
 							 int existingNodes=top.getChildCount();
-
+							 
+							 DefaultMutableTreeNode userNode=new DefaultMutableTreeNode(user);
 							 DefaultMutableTreeNode ipNode=new DefaultMutableTreeNode(ip);							 
 							 DefaultMutableTreeNode nameNode=new DefaultMutableTreeNode(name);
-							 DefaultMutableTreeNode userNode=new DefaultMutableTreeNode(user);							 
-							 ipNode.add(nameNode);
-							 ipNode.add(userNode);
+							 							 
+							 userNode.add(ipNode);
+							 userNode.add(nameNode);
 							 
-							 nodeMap.put(ip, ipNode);
+							 nodeMap.put(ip, userNode);
 							 
-							 top.add(ipNode);
+							 top.add(userNode);
 							 if(firsttime){
 								 mainTree.expandRow(0);
 								 firsttime=false;
@@ -135,15 +136,16 @@ public class IPMessenger {
 							 String user="UserName: "+Util.removePadding(tok[1]);						 
 							 int existingNodes=top.getChildCount();
 							 
+							 DefaultMutableTreeNode userNode=new DefaultMutableTreeNode(user);
 							 DefaultMutableTreeNode ipNode=new DefaultMutableTreeNode(ip);							 
 							 DefaultMutableTreeNode nameNode=new DefaultMutableTreeNode(name);
-							 DefaultMutableTreeNode userNode=new DefaultMutableTreeNode(user);							 
-							 ipNode.add(nameNode);
-							 ipNode.add(userNode);
+							 							 
+							 userNode.add(ipNode);
+							 userNode.add(nameNode);
 							 
-							 nodeMap.put(ip, ipNode);
+							 nodeMap.put(ip, userNode);
 							 
-							 top.add(ipNode);
+							 top.add(userNode);
 							 if(firsttime){
 								 mainTree.expandRow(0);
 								 firsttime=false;
@@ -161,9 +163,9 @@ public class IPMessenger {
 						 DefaultMutableTreeNode node=nodeMap.get(ip); 
 						 if(node != null){
 							 int index=top.getIndex(node);
-							 int indexArr[]={index};
-							 Object removedChildren[]={node};
+							 int indexArr[]={index};							 
 							 top.remove(node);
+							 Object removedChildren[]={node};
 							 treeModel.nodesWereRemoved(top, indexArr, removedChildren);
 							 nodeMap.remove(ip);
 						 }

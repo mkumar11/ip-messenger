@@ -35,12 +35,25 @@ public class JTreeMouseListener extends MouseAdapter{
 		if(e.getClickCount()==2){			
 			JTree jtree=(JTree)e.getComponent();
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode)jtree.getLastSelectedPathComponent();
-			String ip=node.getUserObject().toString();
-			String tok[]=ip.split("\\.");
-			if (tok.length==4){
+			if(node.isLeaf()){
+				String nodeName=node.getUserObject().toString();
+				String tok[]=nodeName.split("\\.");
+				if (tok.length==4){
+					Thread client=new Thread(new ChatClient(nodeName,mainGui));
+					client.start();
+				}else{
+					DefaultMutableTreeNode parentNode=(DefaultMutableTreeNode)node.getParent();
+					DefaultMutableTreeNode ipNode=parentNode.getFirstLeaf();
+					String ip=ipNode.getUserObject().toString();
+					Thread client=new Thread(new ChatClient(ip,mainGui));
+					client.start();
+				}
+			}else{
+				DefaultMutableTreeNode ipNode=node.getFirstLeaf();
+				String ip=ipNode.getUserObject().toString();
 				Thread client=new Thread(new ChatClient(ip,mainGui));
 				client.start();
-			}
+			}			
 		}
 	}
 }

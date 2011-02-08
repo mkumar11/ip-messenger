@@ -167,7 +167,7 @@ public class FileSocketHandler implements Runnable{
 		try{
 			System.out.println();
 			StyledDocument doc=(StyledDocument)associatedChatGui.getMa().getDocument();
-			doc.insertString(doc.getLength(), associatedChatGui.getInetAddress().getHostName()+" : ",bold);
+			doc.insertString(doc.getLength(), associatedChatGui.getRemoteUserName()+" : ",bold);
 			doc.insertString(doc.getLength(), fileSimpleName+"\n",null);					
 			JPanel statusPanel=new JPanel(new BorderLayout());				
 			JTextField jtf=new JTextField("Intialized File Transfer...");

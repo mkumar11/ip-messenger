@@ -55,6 +55,11 @@ public class ChatGui extends JFrame {
 	 */
 	private InetAddress inetAddress; 
 	
+	/**
+	 * User Name with whom the chat is happening.
+	 */
+	private String remoteUserName;
+	
 	
 	/**
 	 * Constructor which configures the main properties 
@@ -145,6 +150,20 @@ public class ChatGui extends JFrame {
 
 	public InetAddress getInetAddress() {
 		return inetAddress;
+	}
+
+
+
+
+	public String getRemoteUserName() {
+		return remoteUserName;
+	}
+
+
+
+
+	public void setRemoteUserName(String remoteUserName) {
+		this.remoteUserName = remoteUserName;
 	}
 		
 }

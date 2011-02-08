@@ -52,42 +52,68 @@ public class ChatClient implements Runnable{
 					"Establishing Connection. Please Wait...");
 			socket=new Socket(ip,1986);
 			InetAddress recipentAddr=socket.getInetAddress();			
-			String recipentName=recipentAddr.getHostName();
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
-			String chatId=GUID.generateId();
 			
 			//sending the same id to the destination IP.
+			String chatId=GUID.generateId();			
 			out.write(chatId.getBytes());
+			out.write(-2);
+			
+			//sending the user name.
+			String user=System.getProperty("user.name");
+			out.write(user.getBytes());
 			out.write(-2);
 			
 			statusFrame.dispose();
 			ChatGui chat=new ChatGui(recipentAddr,out);			
 			chat.setId(chatId);
-			chat.setVisible(true);
+			
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();
 			SimpleAttributeSet bold=new SimpleAttributeSet();
 			StyleConstants.setBold(bold, true);
+			
 			StringBuffer msg=new StringBuffer();
+			StringBuffer userName=new StringBuffer();
+			
+			boolean userNameValue=true;
+			boolean msgValue=false;
+			
 			while(true){
 				int value=in.read();	
 				
 				if(value==-1)
 					break;
 				
-				if(((byte)value) !=-2){
-					char ch=(char)value;
-					msg.append(ch);
-				}else{
-					try{
-						doc.insertString(doc.getLength(), recipentName+" : ",bold);
-						doc.insertString(doc.getLength(), msg.toString()+"\n",null);
-						mainArea.setCaretPosition(doc.getLength());
-					}catch(BadLocationException ble){
-						System.out.println(ble);
-					}					
-					msg=new StringBuffer();
+				if(msgValue){
+					if(((byte)value) !=-2){
+						char ch=(char)value;
+						msg.append(ch);
+					}else{
+						try{
+							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
+							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
+							mainArea.setCaretPosition(doc.getLength());
+						}catch(BadLocationException ble){
+							System.out.println(ble);
+						}					
+						msg=new StringBuffer();
+					}
+				}
+				
+				//collecting the user name bytes.
+				if(userNameValue){
+					if(((byte)value) !=-2){
+						char ch=(char)value;
+						userName.append(ch);
+					}else{
+						chat.setRemoteUserName(userName.toString());
+						chat.setTitle(userName.toString());
+						chat.setVisible(true);
+						userNameValue=false;
+						msgValue=true;
+					}
 				}
 				
 			}

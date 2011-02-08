@@ -44,7 +44,7 @@ public class CSSocketHandler implements Runnable{
 			is=socket.getInputStream();			
 			out=socket.getOutputStream();	
 			InetAddress clientAddr=socket.getInetAddress();			
-			String clientName=clientAddr.getHostName();
+			
 			ChatGui chat=new ChatGui(clientAddr,out);
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();			
@@ -53,9 +53,11 @@ public class CSSocketHandler implements Runnable{
 			
 			StringBuffer msg=new StringBuffer();
 			StringBuffer id=new StringBuffer();
+			StringBuffer userName=new StringBuffer();
 			
 			boolean idValue=true;
 			boolean msgValue=false;
+			boolean userNameValue=false;
 			
 			while(true){									
 				int value=is.read();	
@@ -69,7 +71,7 @@ public class CSSocketHandler implements Runnable{
 						msg.append(ch);
 					}else{
 						try{
-							doc.insertString(doc.getLength(), clientName+" : ",bold);
+							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
 							mainArea.setCaretPosition(doc.getLength());
 						}catch(BadLocationException ble){
@@ -79,23 +81,35 @@ public class CSSocketHandler implements Runnable{
 					}
 				}
 				
+				//collecting the User name bytes.
+				if(userNameValue){
+					if(((byte)value)==-2){
+						chat.setRemoteUserName(userName.toString());
+						chat.setTitle(userName.toString());
+						String user=System.getProperty("user.name");
+						out.write(user.getBytes());
+						out.write(-2);
+						chat.setVisible(true);
+						userNameValue=false;
+						msgValue=true;
+					}else{
+						char chr=(char)value;
+						userName.append(chr);
+					}
+				}
+				
 				// collects the ID bytes.
 				if(idValue){
 					if(((byte)value)==-2){
-						chat.setId(id.toString());
-						chat.setVisible(true);
+						chat.setId(id.toString());						
 						idValue=false;
-						msgValue=true;
+						userNameValue=true;
 					}else{
 						char chr=(char)value;
 						id.append(chr);
 					}
 				}
-			}		
-			
-			
-			
-			
+			}			
 		}catch(IOException ioe){
 			System.out.println(ioe);
 		}finally{
