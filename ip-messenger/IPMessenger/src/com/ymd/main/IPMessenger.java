@@ -7,8 +7,6 @@ import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -30,6 +28,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
+import com.ymd.gui.listner.ExitActionListener;
 import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.JLogoFrame;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
@@ -227,24 +226,14 @@ public class IPMessenger {
 	 * @param multicastSoc - MulticastSocket.
 	 * @param group - Broadcasting group IP.
 	 */
-	private static void registerInSystemTray(final MainGui mainGui,final MulticastSocket multicastSoc,final InetAddress group){
+	private static void registerInSystemTray(final MainGui mainGui,MulticastSocket multicastSoc,InetAddress group){
 		ImageIcon icon=new ImageIcon(iconUrl);
 		if (SystemTray.isSupported()) {
 			SystemTray tray = SystemTray.getSystemTray();
 			Image image =icon.getImage();
 			PopupMenu popup = new PopupMenu();
 			MenuItem exitItem = new MenuItem("Exit");
-			exitItem.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
-					try{
-						Packets.fireGoodbyePacket(multicastSoc, group);
-						multicastSoc.leaveGroup(group);
-					}catch(IOException ioe){
-						ioe.printStackTrace();
-					}
-					System.exit(0) ;
-	             }
-			});
+			exitItem.addActionListener(new ExitActionListener(multicastSoc,group));
 			popup.add(exitItem);
 			TrayIcon trayIcon=new TrayIcon(image,"IPMessenger",popup);
 			trayIcon.addMouseListener(new MouseAdapter(){

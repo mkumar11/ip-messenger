@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
@@ -19,11 +18,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.ymd.gui.listner.ExitActionListener;
 import com.ymd.gui.listner.JTreeMouseListener;
 import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.main.IPMessenger;
-import com.ymd.net.Packets;
 
 /**
  * This is the main GUI window.
@@ -46,7 +45,7 @@ public class MainGui extends JFrame{
 	 * @param multicastSoc - MulticastSocket.
 	 * @param group - Broadcasting group IP.
 	 */
-	public MainGui(String title,final MulticastSocket multicastSoc,final InetAddress group){
+	public MainGui(String title,MulticastSocket multicastSoc,InetAddress group){
 		super(title);
 		
 		JDesktopPane dp=new JDesktopPane();		
@@ -56,17 +55,7 @@ public class MainGui extends JFrame{
 		/*JMenuItem newCall=new JMenuItem("Place Call");
 		call.add(newCall);*/
 		JMenuItem exit=new JMenuItem("Exit");
-		exit.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				try{
-					Packets.fireGoodbyePacket(multicastSoc, group);
-					multicastSoc.leaveGroup(group);
-				}catch(IOException ioe){
-					ioe.printStackTrace();
-				}
-				System.exit(0) ;
-			}
-		});
+		exit.addActionListener(new ExitActionListener(multicastSoc,group));
 		call.add(exit);
 		menuBar.add(call);
 		JMenu help=new JMenu("Help");
