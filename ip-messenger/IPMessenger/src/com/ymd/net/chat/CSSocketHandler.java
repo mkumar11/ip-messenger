@@ -60,8 +60,10 @@ public class CSSocketHandler implements Runnable{
 			while(true){									
 				int value=is.read();	
 				
-				if(value==-1)
+				if(value==-1){
+					chat.dispose();
 					break;
+				}
 				
 				if(((byte)value) !=-1){
 					chat.setRemoteUserClosed(true);
@@ -117,7 +119,7 @@ public class CSSocketHandler implements Runnable{
 				}
 			}			
 		}catch(IOException ioe){
-			System.out.println(ioe);
+			System.out.println("Thread gracefully closed.");
 		}finally{
 			try{
 				is.close();

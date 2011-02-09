@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
@@ -81,8 +82,10 @@ public class ChatClient implements Runnable{
 			while(true){
 				int value=in.read();	
 				
-				if(value==-1)
+				if(value==-1){
+					chat.dispose();
 					break;
+				}
 				
 				if(((byte)value) !=-1){
 					chat.setRemoteUserClosed(true);
@@ -123,8 +126,8 @@ public class ChatClient implements Runnable{
 				}
 				
 			}
-		}catch(Exception ioe){
-			ioe.printStackTrace();
+		}catch(IOException ioe){
+			System.out.println("Thread gracefully closed.");
 		}finally{
 			try{				
 				in.close();
