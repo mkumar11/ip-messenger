@@ -58,6 +58,8 @@ public class ChatGUIUAListener extends KeyAdapter{
 			}			
 			OutputStream out=chatGui.getOut();
 			try{
+				if(chatGui.isRemoteUserClosed())
+					chatGui.setRemoteUserClosed(false);
 				out.write(messageTobeSent.getBytes());
 				out.write(-2);
 			}catch(IOException ioe){

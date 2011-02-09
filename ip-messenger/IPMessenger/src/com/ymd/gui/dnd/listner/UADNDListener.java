@@ -63,6 +63,8 @@ public class UADNDListener extends DropTargetAdapter{
 					File file = iterator.next();
 					String simpleName=file.getName();
 					StatusPanels panels=displayFTStatusMsg(doc,simpleName);
+					if(chatGui.isRemoteUserClosed())
+						chatGui.setRemoteUserClosed(false);
 					chatGui.getMa().setCaretPosition(chatGui.getMa().getDocument().getLength());
 					Thread fileClient=new Thread(new FileClient(ip,file,chatGui.getId(),panels));
 					fileClient.start();					
