@@ -3,7 +3,6 @@ package com.ymd.net.chat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import javax.swing.JFrame;
@@ -50,8 +49,7 @@ public class ChatClient implements Runnable{
 		try{
 			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
 					"Establishing Connection. Please Wait...");
-			socket=new Socket(ip,1986);
-			InetAddress recipentAddr=socket.getInetAddress();			
+			socket=new Socket(ip,1986);						
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
 			
@@ -66,7 +64,7 @@ public class ChatClient implements Runnable{
 			out.write(-2);
 			
 			statusFrame.dispose();
-			ChatGui chat=new ChatGui(recipentAddr,out);			
+			ChatGui chat=new ChatGui(socket);			
 			chat.setId(chatId);
 			
 			JTextPane mainArea=chat.getMa();
@@ -86,12 +84,18 @@ public class ChatClient implements Runnable{
 				if(value==-1)
 					break;
 				
+				if(((byte)value) !=-1){
+					chat.setRemoteUserClosed(true);
+				}
+				
 				if(msgValue){
 					if(((byte)value) !=-2){
 						char ch=(char)value;
 						msg.append(ch);
 					}else{
 						try{
+							if(!chat.isVisible())
+								chat.setVisible(true);
 							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
 							mainArea.setCaretPosition(doc.getLength());

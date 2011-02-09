@@ -3,7 +3,6 @@ package com.ymd.net.chat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import javax.swing.JTextPane;
@@ -42,10 +41,9 @@ public class CSSocketHandler implements Runnable{
 		OutputStream out=null;
 		try{			
 			is=socket.getInputStream();			
-			out=socket.getOutputStream();	
-			InetAddress clientAddr=socket.getInetAddress();			
+			out=socket.getOutputStream();						
 			
-			ChatGui chat=new ChatGui(clientAddr,out);
+			ChatGui chat=new ChatGui(socket);
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();			
 			SimpleAttributeSet bold=new SimpleAttributeSet();
@@ -65,12 +63,18 @@ public class CSSocketHandler implements Runnable{
 				if(value==-1)
 					break;
 				
+				if(((byte)value) !=-1){
+					chat.setRemoteUserClosed(true);
+				}
+				
 				if(msgValue){
 					if(((byte)value) !=-2){
 						char ch=(char)value;
 						msg.append(ch);
 					}else{
 						try{
+							if(!chat.isVisible())
+								chat.setVisible(true);
 							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
 							mainArea.setCaretPosition(doc.getLength());

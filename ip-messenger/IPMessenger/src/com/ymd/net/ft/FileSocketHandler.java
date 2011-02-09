@@ -118,6 +118,8 @@ public class FileSocketHandler implements Runnable{
 						char ch=(char)value;
 						fileName.append(ch);
 					}else{
+						if(!associatedChatGui.isVisible())
+							associatedChatGui.setVisible(true);
 						file=FileUtil.createNonExistingFile(fileName.toString());
 						panels=dispalyFTIntializationMsg(fileName.toString(),fsOutputStream);
 						associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa().getDocument().getLength());

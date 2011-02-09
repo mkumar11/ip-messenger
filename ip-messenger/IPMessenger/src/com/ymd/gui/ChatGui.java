@@ -5,7 +5,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
+import java.net.Socket;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -48,17 +48,17 @@ public class ChatGui extends JFrame {
 	/**
 	 * OutputStream associated with this chat window.
 	 */
-	private final OutputStream out;
-	
-	/**
-	 * The InetAddress that this GUI is Associated with.
-	 */
-	private InetAddress inetAddress; 
+	private OutputStream out;
 	
 	/**
 	 * User Name with whom the chat is happening.
 	 */
 	private String remoteUserName;
+	
+	/**
+	 * Remote user chat window status.
+	 */
+	private boolean remoteUserClosed;
 	
 	
 	/**
@@ -67,13 +67,16 @@ public class ChatGui extends JFrame {
 	 * @param title
 	 * @param out
 	 */
-	public ChatGui(InetAddress inetAddress,final OutputStream out){
-		super(inetAddress.getHostAddress()+":-IPMessenger");
-		this.out=out;
-		this.inetAddress=inetAddress;
+	public ChatGui(final Socket socket){		
+		try{
+			out=socket.getOutputStream();
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+		}		
 		JDesktopPane dp=new JDesktopPane();
 		dp.setLayout(null);
 		this.setContentPane(dp);
+		final ChatGui thisChat=this;
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				try{
@@ -81,7 +84,16 @@ public class ChatGui extends JFrame {
 				}catch(IOException ioe){
 					ioe.printStackTrace();
 				}
-				IPMessenger.chatGuiMap.remove(id);				
+				if(remoteUserClosed){
+					thisChat.dispose();
+					try{
+						out.close();
+						socket.close();
+					}catch(IOException ioe){
+						ioe.printStackTrace();
+					}
+					IPMessenger.chatGuiMap.remove(id);	
+				}
 			}
 		});
 		
@@ -97,14 +109,13 @@ public class ChatGui extends JFrame {
 		ua.setLineWrap(true);
 		ua.setWrapStyleWord(true);
 		ua.addKeyListener(new ChatGUIUAListener(this));
-		new DropTarget(ua,new UADNDListener(inetAddress.getHostAddress(),this));
+		new DropTarget(ua,new UADNDListener(socket.getInetAddress().getHostAddress(),this));
 		JScrollPane jspua=new JScrollPane(ua);		
 		jspua.setBounds(0, 300, 250, 100);		
 		dp.add(jspua);		
 		
 		ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
-		setIconImage(icon.getImage());
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);		
+		setIconImage(icon.getImage());				
 		setSize(260, 450);		
 		CompCenterCords cords=GUIUtil.getCompCenterCords(260, 450);
 		setLocation(cords.getX(), cords.getY());
@@ -145,16 +156,6 @@ public class ChatGui extends JFrame {
 		this.id = id;
 	}
 
-
-
-
-	public InetAddress getInetAddress() {
-		return inetAddress;
-	}
-
-
-
-
 	public String getRemoteUserName() {
 		return remoteUserName;
 	}
@@ -164,6 +165,20 @@ public class ChatGui extends JFrame {
 
 	public void setRemoteUserName(String remoteUserName) {
 		this.remoteUserName = remoteUserName;
+	}
+
+
+
+
+	public boolean isRemoteUserClosed() {
+		return remoteUserClosed;
+	}
+
+
+
+
+	public void setRemoteUserClosed(boolean remoteUserClosed) {
+		this.remoteUserClosed = remoteUserClosed;
 	}
 		
 }
