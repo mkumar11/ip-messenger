@@ -17,7 +17,7 @@ import com.ymd.gui.ChatGui;
  * This is the thread which runs the chat server.
  * 
  * @author yaragalla Muralidhar.
- *
+ * 
  */
 public class CSSocketHandler implements Runnable{
 	
@@ -65,25 +65,27 @@ public class CSSocketHandler implements Runnable{
 					break;
 				}
 				
-				if(((byte)value) !=-1){
+				if(((byte)value) ==-1){
 					chat.setRemoteUserClosed(true);
 				}
 				
 				if(msgValue){
-					if(((byte)value) !=-2){
+					if(((byte)value) !=-2 && ((byte)value) !=-1){
 						char ch=(char)value;
 						msg.append(ch);
-					}else{
+					}else if(((byte)value) !=-1){
 						try{
-							if(!chat.isVisible())
+							if(!chat.isVisible()){
 								chat.setVisible(true);
+								
+							}
 							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
 							mainArea.setCaretPosition(doc.getLength());
 							chat.setExtendedState(0);
 							chat.toFront();
 						}catch(BadLocationException ble){
-							System.out.println(ble);
+							ble.printStackTrace();
 						}					
 						msg=new StringBuffer();
 					}

@@ -22,7 +22,7 @@ import com.ymd.gui.ChatGui;
  * user input area.
  * 
  * @author yaragalla Muralidhar.
- *
+ * 
  */
 public class ChatGUIUAListener extends KeyAdapter{
 	
@@ -58,17 +58,16 @@ public class ChatGUIUAListener extends KeyAdapter{
 			}			
 			OutputStream out=chatGui.getOut();
 			try{
-				if(chatGui.isRemoteUserClosed())
-					chatGui.setRemoteUserClosed(false);
+				if(chatGui.isRemoteUserClosed()){
+					chatGui.setRemoteUserClosed(false);					
+				}
 				out.write(messageTobeSent.getBytes());
 				out.write(-2);
 			}catch(IOException ioe){
 				try{
 					String msg="The Person whom you are chatting to " +
-					"has exited the chat.\nIf you still want to " +
-					"continue intiate a \nchat again by opening a " +
-					"new chat window.";
-					doc.insertString(doc.getLength(),msg+"\n",null);
+									"is not online anymore.";
+					doc.insertString(doc.getLength(),msg+"\n",bold);
 					mainArea.setCaretPosition(doc.getLength());
 				}catch(BadLocationException ble){
 					System.out.println(ble);

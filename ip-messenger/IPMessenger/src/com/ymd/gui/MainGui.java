@@ -58,19 +58,7 @@ public class MainGui extends JFrame{
 		exit.addActionListener(new ExitActionListener(multicastSoc,group));
 		call.add(exit);
 		menuBar.add(call);
-		JMenu help=new JMenu("Help");
-		JMenuItem about=new JMenuItem("About IPMessenger");
-		final int x=getX();
-		final int y=getY();
-		about.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent ae){
-				About about=new About("About IPMessenger",x,y);
-				about.setVisible(true);
-			}
-		});
-		help.add(about);
-		menuBar.add(help);
-		setJMenuBar(menuBar);
+		
 		
 		top =new DefaultMutableTreeNode("All Online Systems..");		
 		mainTree=new JTree(top);		
@@ -83,6 +71,22 @@ public class MainGui extends JFrame{
 		setSize(200, 550);
 		CompCenterCords cords=GUIUtil.getCompCenterCords(200, 550);
 		setLocation(cords.getX(), cords.getY());
+		
+		// this needs cords so call after setting the location.
+		JMenu help=new JMenu("Help");
+		JMenuItem about=new JMenuItem("About IPMessenger");		
+		final int x=getX();		
+		final int y=getY();
+		about.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				About about=new About("About IPMessenger",x,y);
+				about.setVisible(true);
+			}
+		});
+		help.add(about);
+		menuBar.add(help);
+		setJMenuBar(menuBar);
+		
 		setVisible(true);
 	}
 
@@ -115,7 +119,9 @@ public class MainGui extends JFrame{
 					"Version : 1.2");
 			jta.setEditable(false);
 			container.add(jta,BorderLayout.CENTER);
-			setSize(277, 277);
+			ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
+			setIconImage(icon.getImage());	
+			setSize(277, 200);
 			setDefaultCloseOperation(DISPOSE_ON_CLOSE);	
 			setLocation(x, y);			
 		}

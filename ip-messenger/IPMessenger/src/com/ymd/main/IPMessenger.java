@@ -88,8 +88,7 @@ public class IPMessenger {
 			registerInSystemTray(gi,multicastSoc,group);
 			JTree mainTree=gi.getMainTree();
 			DefaultTreeModel treeModel=(DefaultTreeModel)mainTree.getModel();
-			DefaultMutableTreeNode top=gi.getTop();
-			boolean firsttime=true;			
+			DefaultMutableTreeNode top=gi.getTop();					
 			
 			Packets.fireHelloPacket(multicastSoc,group);
 			while(true){
@@ -110,8 +109,8 @@ public class IPMessenger {
 					 if(!Util.localHost(ip)){ 
 						 Packets.fireHandShakePacket(multicastSoc,group);
 						 if(!nodeMap.containsKey(ip)){
-							 String name="HostName: "+pacSenderAddr.getHostName();
-							 String user="UserName: "+Util.removePadding(tok[1]);						 
+							 String name=pacSenderAddr.getHostName();
+							 String user=Util.removePadding(tok[1]);						 
 							 int existingNodes=top.getChildCount();
 							 
 							 DefaultMutableTreeNode userNode=new DefaultMutableTreeNode(user);
@@ -124,14 +123,11 @@ public class IPMessenger {
 							 nodeMap.put(ip, userNode);
 							 
 							 top.add(userNode);
-							 if(firsttime){
-								 mainTree.expandRow(0);
-								 firsttime=false;
-							 }else{
-								 
-								 int index[]={existingNodes};
-								 treeModel.nodesWereInserted(top,index );
-							 }
+							 
+							 mainTree.expandRow(0);
+							 int index[]={existingNodes};
+							 treeModel.nodesWereInserted(top,index );
+							 
 						 }
 						
 					 
@@ -142,8 +138,8 @@ public class IPMessenger {
 					 String ip=pacSenderAddr.getHostAddress();
 					 if(!Util.localHost(ip)){
 						 if(!nodeMap.containsKey(ip)){
-							 String name="HostName: "+pacSenderAddr.getHostName();
-							 String user="UserName: "+Util.removePadding(tok[1]);						 
+							 String name=pacSenderAddr.getHostName();
+							 String user=Util.removePadding(tok[1]);						 
 							 int existingNodes=top.getChildCount();
 							 
 							 DefaultMutableTreeNode userNode=new DefaultMutableTreeNode(user);
@@ -156,13 +152,11 @@ public class IPMessenger {
 							 nodeMap.put(ip, userNode);
 							 
 							 top.add(userNode);
-							 if(firsttime){
-								 mainTree.expandRow(0);
-								 firsttime=false;
-							 }else{
-								 int index[]={existingNodes};
-								 treeModel.nodesWereInserted(top,index );
-							 }
+							 
+							 mainTree.expandRow(0);
+							 int index[]={existingNodes};
+							 treeModel.nodesWereInserted(top,index );
+							 
 						 }
 					 }
 				 }

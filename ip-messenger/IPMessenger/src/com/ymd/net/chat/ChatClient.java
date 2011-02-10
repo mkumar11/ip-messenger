@@ -22,7 +22,7 @@ import com.ymd.util.GUID;
  * window.
  * 
  * @author yaragalla Muralidhar
- *
+ * 
  */
 public class ChatClient implements Runnable{	
 	
@@ -86,15 +86,15 @@ public class ChatClient implements Runnable{
 					break;
 				}
 				
-				if(((byte)value) !=-1){
+				if(((byte)value) ==-1){
 					chat.setRemoteUserClosed(true);
 				}
 				
 				if(msgValue){
-					if(((byte)value) !=-2){
+					if(((byte)value) !=-2 && ((byte)value) !=-1){
 						char ch=(char)value;
 						msg.append(ch);
-					}else{
+					}else if(((byte)value) !=-1){
 						try{
 							if(!chat.isVisible())
 								chat.setVisible(true);
@@ -138,7 +138,4 @@ public class ChatClient implements Runnable{
 		}
 		
 	}
-	
-	
-
 }
