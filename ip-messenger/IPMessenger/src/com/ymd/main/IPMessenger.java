@@ -15,7 +15,10 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -53,11 +56,14 @@ public class IPMessenger {
 	 */
 	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>();
 	public static final URL iconUrl=Resource.class.getResource("icon.jpg");
+	public static ResourceBundle resources;
 	
 	//static block which registers the cross look and feel.
 	static{
 		try{
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			resources = ResourceBundle.getBundle("resources.IPMessenger", 
+                    Locale.getDefault());
 		}catch(UnsupportedLookAndFeelException ulfe){
 			ulfe.printStackTrace();
 		}catch(IllegalAccessException ie){
@@ -66,7 +72,10 @@ public class IPMessenger {
 			instEx.printStackTrace();
 		}catch(ClassNotFoundException cnfe){
 			cnfe.printStackTrace();
-		}
+		}catch (MissingResourceException mre) {
+            System.err.println("resources/IPMessenger.properties not found");
+            System.exit(1);
+        }
 	}
 
 	/**
