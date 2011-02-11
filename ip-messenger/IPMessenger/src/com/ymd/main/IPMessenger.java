@@ -63,7 +63,7 @@ public class IPMessenger {
 		try{
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			resources = ResourceBundle.getBundle("resources.IPMessenger", 
-                    Locale.getDefault());
+                    				Locale.getDefault());
 		}catch(UnsupportedLookAndFeelException ulfe){
 			ulfe.printStackTrace();
 		}catch(IllegalAccessException ie){
