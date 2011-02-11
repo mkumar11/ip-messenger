@@ -12,6 +12,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.main.IPMessenger;
 
 /**
  * This is the thread which runs the chat server.
@@ -62,6 +63,7 @@ public class CSSocketHandler implements Runnable{
 				
 				if(value==-1){
 					chat.dispose();
+					IPMessenger.chatGuiMap.remove(chat.getId());
 					break;
 				}
 				

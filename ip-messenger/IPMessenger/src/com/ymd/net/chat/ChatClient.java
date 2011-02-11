@@ -15,6 +15,7 @@ import javax.swing.text.StyleConstants;
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
 import com.ymd.gui.util.GUIUtil;
+import com.ymd.main.IPMessenger;
 import com.ymd.util.GUID;
 
 /**
@@ -83,6 +84,7 @@ public class ChatClient implements Runnable{
 				
 				if(value==-1){
 					chat.dispose();
+					IPMessenger.chatGuiMap.remove(chat.getId());
 					break;
 				}
 				
