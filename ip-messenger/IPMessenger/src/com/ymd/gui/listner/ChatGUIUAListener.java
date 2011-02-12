@@ -16,6 +16,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
 /**
@@ -26,6 +27,8 @@ import com.ymd.main.IPMessenger;
  * 
  */
 public class ChatGUIUAListener extends KeyAdapter{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private ChatGui chatGui;
 	
@@ -56,7 +59,7 @@ public class ChatGUIUAListener extends KeyAdapter{
 				doc.insertString(doc.getLength(), messageTobeSent+"\n",null);
 				mainArea.setCaretPosition(doc.getLength());
 			}catch(BadLocationException ble){
-				System.out.println(ble);
+				logger.error(ble.getMessage(), ble);
 			}			
 			OutputStream out=chatGui.getOut();
 			try{
@@ -71,7 +74,7 @@ public class ChatGUIUAListener extends KeyAdapter{
 					doc.insertString(doc.getLength(),msg+"\n",bold);
 					mainArea.setCaretPosition(doc.getLength());
 				}catch(BadLocationException ble){
-					System.out.println(ble);
+					logger.error(ble.getMessage(), ble);
 				}				
 			}			
 		}		

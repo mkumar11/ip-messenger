@@ -32,7 +32,7 @@ import com.ymd.main.IPMessenger;
  */
 public class MainGui extends JFrame{
 
-	private static final long serialVersionUID = -4819025906370311549L;
+	private static final long serialVersionUID = -4819025906370311549L;	
 
 	private DefaultMutableTreeNode top;
 	private JTree mainTree;
@@ -60,7 +60,7 @@ public class MainGui extends JFrame{
 		menuBar.add(call);*/
 		
 		
-		top =new DefaultMutableTreeNode("All Online Systems..");		
+		top =new DefaultMutableTreeNode(IPMessenger.resources.getString("mainGuiOnlineSystems"));		
 		mainTree=new JTree(top);		
 		mainTree.addMouseListener(new JTreeMouseListener(this));
 		JScrollPane mtsp=new JScrollPane(mainTree);

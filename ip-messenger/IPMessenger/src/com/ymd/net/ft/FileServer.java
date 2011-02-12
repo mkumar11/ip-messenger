@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.ymd.log.IPMLogger;
+
 /**
  * This is the server which handles File transfers.
  * 
@@ -14,7 +16,8 @@ import java.net.Socket;
  *
  */
 public class FileServer implements Runnable{
-
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 
 	@Override
 	public void run() {
@@ -26,7 +29,7 @@ public class FileServer implements Runnable{
 				thread.start();
 			}
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			logger.error(ioe.getMessage(), ioe);
 		}		
 	}	
 }

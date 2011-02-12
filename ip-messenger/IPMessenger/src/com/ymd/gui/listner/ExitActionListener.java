@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+import com.ymd.log.IPMLogger;
 import com.ymd.net.Packets;
 
 /**
@@ -15,6 +16,8 @@ import com.ymd.net.Packets;
  *
  */
 public class ExitActionListener implements ActionListener{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private MulticastSocket multicastSoc;
 	private InetAddress group;
@@ -36,7 +39,7 @@ public class ExitActionListener implements ActionListener{
 			Packets.fireGoodbyePacket(multicastSoc, group);
 			multicastSoc.leaveGroup(group);
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			logger.error(ioe.getMessage(), ioe);
 		}
 		System.exit(0) ;
      }	

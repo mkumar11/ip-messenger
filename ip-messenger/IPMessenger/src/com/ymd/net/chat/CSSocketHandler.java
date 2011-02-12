@@ -12,6 +12,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
 /**
@@ -21,6 +22,8 @@ import com.ymd.main.IPMessenger;
  * 
  */
 public class CSSocketHandler implements Runnable{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private Socket socket;
 	
@@ -87,7 +90,7 @@ public class CSSocketHandler implements Runnable{
 							chat.setExtendedState(0);
 							chat.toFront();
 						}catch(BadLocationException ble){
-							ble.printStackTrace();
+							logger.error(ble.getMessage(), ble);
 						}					
 						msg=new StringBuffer();
 					}
@@ -123,14 +126,14 @@ public class CSSocketHandler implements Runnable{
 				}
 			}			
 		}catch(IOException ioe){
-			System.out.println("Thread gracefully closed.");
+			logger.info("Thread gracefully closed.");			
 		}finally{
 			try{
 				is.close();
 				out.close();
 				socket.close();
 			}catch(IOException ioe){
-				ioe.printStackTrace();
+				logger.error(ioe.getMessage(), ioe);
 			}
 		}		
 	}	

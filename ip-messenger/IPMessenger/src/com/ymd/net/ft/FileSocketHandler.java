@@ -25,6 +25,7 @@ import javax.swing.text.StyledDocument;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.listner.FTDListener;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 import com.ymd.util.FileUtil;
 
@@ -35,6 +36,8 @@ import com.ymd.util.FileUtil;
  * 
  */
 public class FileSocketHandler implements Runnable{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private Socket fileSocket;
 	private ChatGui associatedChatGui;
@@ -144,14 +147,14 @@ public class FileSocketHandler implements Runnable{
 			}
 			
 		}catch(IOException ioe){
-			ioe.printStackTrace();			
+			logger.error(ioe.getMessage(), ioe);			
 		}finally{
 			try{
 				fsOutputStream.close();
 				fsInputStream.close();
 				fileSocket.close();				
 			}catch(IOException ioe){
-				ioe.printStackTrace();
+				logger.error(ioe.getMessage(), ioe);
 			}
 		}		
 	}	
@@ -168,8 +171,7 @@ public class FileSocketHandler implements Runnable{
 		StatusPanels panels=new StatusPanels();
 		SimpleAttributeSet bold=new SimpleAttributeSet();
 		StyleConstants.setBold(bold, true);
-		try{
-			System.out.println();
+		try{			
 			StyledDocument doc=(StyledDocument)associatedChatGui.getMa().getDocument();
 			doc.insertString(doc.getLength(), associatedChatGui.getRemoteUserName()+" : ",bold);
 			doc.insertString(doc.getLength(), fileSimpleName+"\n",null);					
@@ -198,7 +200,7 @@ public class FileSocketHandler implements Runnable{
 		    panels.setProgress(decissionPanel);
 		    
 		}catch(BadLocationException ble){
-			ble.printStackTrace();
+			logger.error(ble.getMessage(), ble);
 		}
 		return panels;
 	}

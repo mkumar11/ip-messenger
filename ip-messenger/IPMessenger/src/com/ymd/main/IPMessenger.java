@@ -36,6 +36,7 @@ import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.JLogoFrame;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.images.Resource;
+import com.ymd.log.IPMLogger;
 import com.ymd.net.Packets;
 import com.ymd.net.chat.ChatServer;
 import com.ymd.net.ft.FileServer;
@@ -51,6 +52,8 @@ import com.ymd.util.Util;
  */
 public class IPMessenger {
 	
+	private static IPMLogger logger=IPMLogger.getLogger();
+	
 	/**
 	 * Holds all the ChatGui Instances.
 	 */
@@ -65,15 +68,15 @@ public class IPMessenger {
 			resources = ResourceBundle.getBundle("resources.IPMessenger", 
                     				Locale.getDefault());
 		}catch(UnsupportedLookAndFeelException ulfe){
-			ulfe.printStackTrace();
+			logger.error(ulfe.getMessage(), ulfe);
 		}catch(IllegalAccessException ie){
-			ie.printStackTrace();
+			logger.error(ie.getMessage(),ie);
 		}catch(InstantiationException instEx){
-			instEx.printStackTrace();
+			logger.error(instEx.getMessage(), instEx);
 		}catch(ClassNotFoundException cnfe){
-			cnfe.printStackTrace();
+			logger.error(cnfe.getMessage(), cnfe);
 		}catch (MissingResourceException mre) {
-            System.err.println("resources/IPMessenger.properties not found");
+			logger.error("resources/IPMessenger.properties not found");            
             System.exit(1);
         }
 	}
@@ -138,9 +141,7 @@ public class IPMessenger {
 							 int index[]={existingNodes};
 							 treeModel.nodesWereInserted(top,index );
 							 
-						 }
-						
-					 
+						 }					 
 					 }
 				 }
 				 
@@ -187,7 +188,7 @@ public class IPMessenger {
 				 }
 			}
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			logger.error(ioe.getMessage(), ioe);
 		}
 	}
 	
@@ -214,7 +215,7 @@ public class IPMessenger {
 			try{
 				Thread.sleep(10000);
 			}catch(InterruptedException ie){
-				ie.printStackTrace();
+				logger.error(ie.getMessage(), ie);
 			}
 			errorFrame.dispose();
 			System.exit(0);
@@ -247,8 +248,8 @@ public class IPMessenger {
 			});
 			try {
 	             tray.add(trayIcon);
-	         } catch (AWTException e) {
-	             e.printStackTrace();
+	         } catch (AWTException awte) {
+	             logger.error(awte.getMessage(), awte);
 	         }
 		}
 		

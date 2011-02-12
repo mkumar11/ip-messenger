@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
 /**
@@ -23,6 +24,8 @@ import com.ymd.main.IPMessenger;
  * 
  */
 public class FTDListener implements ActionListener{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private JPanel statusPanel;
 	private JPanel decissionPanel;
@@ -64,7 +67,7 @@ public class FTDListener implements ActionListener{
 			assocFsOs.write(actionCmd.getBytes());
 			assocFsOs.write(-2);
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			logger.error(ioe.getMessage(), ioe);
 		}
 	}	
 }

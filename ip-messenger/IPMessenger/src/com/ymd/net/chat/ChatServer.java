@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.ymd.log.IPMLogger;
+
 
 /**
  * This is the thread which runs the chat server.
@@ -12,6 +14,8 @@ import java.net.Socket;
  * 
  */
 public class ChatServer implements Runnable{	
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 
 	@Override
 	public void run() {
@@ -23,7 +27,7 @@ public class ChatServer implements Runnable{
 				t.start();
 			}
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			logger.error(ioe.getMessage(), ioe);
 		}
 	}
 	

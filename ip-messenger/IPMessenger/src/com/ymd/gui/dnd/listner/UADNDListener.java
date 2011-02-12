@@ -24,6 +24,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 import com.ymd.net.ft.FileClient;
 
@@ -34,6 +35,8 @@ import com.ymd.net.ft.FileClient;
  *
  */
 public class UADNDListener extends DropTargetAdapter{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private String ip;
 	private ChatGui chatGui;
@@ -80,10 +83,10 @@ public class UADNDListener extends DropTargetAdapter{
 				event.rejectDrop();
 			}
 		}catch (IOException exception) {
-			exception.printStackTrace();			
+			logger.error(exception.getMessage(), exception);			
 			event.rejectDrop();
 		}catch (UnsupportedFlavorException ufException ) {
-			ufException.printStackTrace();			
+			logger.error(ufException.getMessage(), ufException);			
 			event.rejectDrop();
 		}		
 	}
@@ -118,7 +121,7 @@ public class UADNDListener extends DropTargetAdapter{
 		    panels.setProgress(progressPanel);
 		    
 		}catch(BadLocationException ble){
-			ble.printStackTrace();
+			logger.error(ble.getMessage(), ble);
 		}
 		
 		return panels;

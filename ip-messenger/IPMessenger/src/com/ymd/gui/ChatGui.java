@@ -18,6 +18,7 @@ import com.ymd.gui.dnd.listner.UADNDListener;
 import com.ymd.gui.listner.ChatGUIUAListener;
 import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
 /**
@@ -29,6 +30,7 @@ import com.ymd.main.IPMessenger;
 public class ChatGui extends JFrame {
 	
 	private static final long serialVersionUID = 4942132120249803370L;
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	/**
 	 * Main Area associated with this chat window.
@@ -70,8 +72,8 @@ public class ChatGui extends JFrame {
 	public ChatGui(final Socket socket){		
 		try{
 			out=socket.getOutputStream();
-		}catch(IOException ioe){
-			ioe.printStackTrace();
+		}catch(IOException ioe){			
+			logger.error(ioe.getMessage(), ioe);
 		}		
 		JDesktopPane dp=new JDesktopPane();
 		dp.setLayout(null);
@@ -82,7 +84,7 @@ public class ChatGui extends JFrame {
 				try{
 					out.write(-1);
 				}catch(IOException ioe){
-					ioe.printStackTrace();
+					logger.error(ioe.getMessage(), ioe);
 				}
 				if(remoteUserClosed){
 					thisChat.dispose();
@@ -90,7 +92,7 @@ public class ChatGui extends JFrame {
 						out.close();
 						socket.close();
 					}catch(IOException ioe){
-						ioe.printStackTrace();
+						logger.error(ioe.getMessage(), ioe);
 					}
 					IPMessenger.chatGuiMap.remove(id);	
 				}
@@ -104,7 +106,7 @@ public class ChatGui extends JFrame {
 		dp.add(jspma);
 		
 		ua=new JTextArea();
-		ua.setToolTipText("Enter your chat message here...");
+		ua.setToolTipText(IPMessenger.resources.getString("userAreaToolTip"));
 		ua.setDragEnabled(true);
 		ua.setLineWrap(true);
 		ua.setWrapStyleWord(true);

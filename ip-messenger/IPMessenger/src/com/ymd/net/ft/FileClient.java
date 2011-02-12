@@ -17,6 +17,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 import com.ymd.gui.dnd.listner.UADNDListener.StatusPanels;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
 /**
@@ -27,6 +28,8 @@ import com.ymd.main.IPMessenger;
  *
  */
 public class FileClient implements Runnable{
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private File file;
 	private String ip;
@@ -117,11 +120,10 @@ public class FileClient implements Runnable{
 								jpb.setValue(count);
 								count=count+1;
 							}
-						}
-						
-						statustf.setText(IPMessenger.resources.getString("completedFT"));
-						
+						}						
+						statustf.setText(IPMessenger.resources.getString("completedFT"));						
 						break;
+						
 					}else if(cmd.toString().equalsIgnoreCase("reject")){
 						JPanel status=panels.getStatus();
 						Component[] statusComps=status.getComponents();
@@ -132,14 +134,14 @@ public class FileClient implements Runnable{
 				}				
 			}			
 		}catch(IOException ioe){
-			ioe.printStackTrace();
+			logger.error(ioe.getMessage(), ioe);
 		}finally{
 			try{
 				sockestIs.close();
 				socketOs.close();
 				fileSock.close();				
 			}catch(IOException ioe){
-				ioe.printStackTrace();
+				logger.error(ioe.getMessage(),ioe);
 			}
 		}		
 	}	

@@ -15,6 +15,7 @@ import javax.swing.text.StyleConstants;
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
 import com.ymd.gui.util.GUIUtil;
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 import com.ymd.util.GUID;
 
@@ -26,6 +27,8 @@ import com.ymd.util.GUID;
  * 
  */
 public class ChatClient implements Runnable{	
+	
+	private IPMLogger logger=IPMLogger.getLogger();
 	
 	private String ip;
 	private MainGui mainGui;
@@ -49,7 +52,7 @@ public class ChatClient implements Runnable{
 		OutputStream out=null;
 		try{
 			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
-					"Establishing Connection. Please Wait...");
+					IPMessenger.resources.getString("establishingConnWait"));
 			socket=new Socket(ip,1986);						
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
@@ -106,7 +109,7 @@ public class ChatClient implements Runnable{
 							chat.setExtendedState(0);
 							chat.toFront();
 						}catch(BadLocationException ble){
-							ble.printStackTrace();
+							logger.error(ble.getMessage(), ble);
 						}					
 						msg=new StringBuffer();
 					}
@@ -128,14 +131,14 @@ public class ChatClient implements Runnable{
 				
 			}
 		}catch(IOException ioe){
-			System.out.println("Thread gracefully closed.");
+			logger.info("Thread gracefully closed.");			
 		}finally{
 			try{				
 				in.close();
 				out.close();
 				socket.close();	
 			}catch(IOException ioe){
-				ioe.printStackTrace();
+				logger.error(ioe.getMessage(), ioe);
 			}
 		}
 		
