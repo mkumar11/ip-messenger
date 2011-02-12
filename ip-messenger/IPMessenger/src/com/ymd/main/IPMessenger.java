@@ -93,7 +93,8 @@ public class IPMessenger {
 			MulticastSocket multicastSoc=new MulticastSocket(1988); 
 			InetAddress group = InetAddress.getByName("225.5.6.4");
 			multicastSoc.joinGroup(group);
-			MainGui gi=new MainGui("IPMessenger",multicastSoc,group);
+			MainGui gi=new MainGui(IPMessenger.resources.getString("ipmessenger"),
+													multicastSoc,group);
 			registerInSystemTray(gi,multicastSoc,group);
 			JTree mainTree=gi.getMainTree();
 			DefaultTreeModel treeModel=(DefaultTreeModel)mainTree.getModel();
@@ -206,9 +207,7 @@ public class IPMessenger {
 		progress.setValue(3);
 		logoFrame.dispose();
 		if(!(mainPort && chatPort && filePort)){
-			JFrame errorFrame=GUIUtil.displayMessage(0, 0, "IPMessenger Error Mesage : " +
-					"Required Ports On The System Are Not Free. " +
-					"Exiting Application.\n\n");			
+			JFrame errorFrame=GUIUtil.displayMessage(0, 0, IPMessenger.resources.getString("portsNotFree"));			
 			Dimension dim=errorFrame.getSize();
 			CompCenterCords cords=GUIUtil.getCompCenterCords(dim.width,dim.height);
 			errorFrame.setLocation(cords.getX(), cords.getY());
@@ -235,10 +234,10 @@ public class IPMessenger {
 			SystemTray tray = SystemTray.getSystemTray();
 			Image image =icon.getImage();
 			PopupMenu popup = new PopupMenu();
-			MenuItem exitItem = new MenuItem("Exit");
+			MenuItem exitItem = new MenuItem(IPMessenger.resources.getString("exit"));
 			exitItem.addActionListener(new ExitActionListener(multicastSoc,group));
 			popup.add(exitItem);
-			TrayIcon trayIcon=new TrayIcon(image,"IPMessenger",popup);
+			TrayIcon trayIcon=new TrayIcon(image,IPMessenger.resources.getString("ipmessenger"),popup);
 			trayIcon.addMouseListener(new MouseAdapter(){
 				public void mouseClicked(MouseEvent e){
 					if(e.getClickCount()==2){

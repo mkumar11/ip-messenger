@@ -83,7 +83,7 @@ public class FileSocketHandler implements Runnable{
 						JPanel statusPanel=panels.getStatus();
 						Component[] spComps=statusPanel.getComponents();
 						JTextField statusFld=(JTextField)spComps[0];					
-						statusFld.setText("Transfer Completed..");
+						statusFld.setText(IPMessenger.resources.getString("completedFT"));
 					}
 					break;
 				}
@@ -174,7 +174,7 @@ public class FileSocketHandler implements Runnable{
 			doc.insertString(doc.getLength(), associatedChatGui.getRemoteUserName()+" : ",bold);
 			doc.insertString(doc.getLength(), fileSimpleName+"\n",null);					
 			JPanel statusPanel=new JPanel(new BorderLayout());				
-			JTextField jtf=new JTextField("Intialized File Transfer...");
+			JTextField jtf=new JTextField(IPMessenger.resources.getString("initializedFT"));
 			jtf.setEditable(false);
 			statusPanel.add(jtf,BorderLayout.CENTER);
 			Style style = doc.addStyle("StyleName", null);
@@ -184,9 +184,11 @@ public class FileSocketHandler implements Runnable{
 		    
 		    JPanel decissionPanel=new JPanel(new GridLayout(1,2,10,10));
 		    FTDListener ftdLstener=new FTDListener(statusPanel,decissionPanel,fsOutputStream);
-		    JButton accept=new JButton("Accept");		   
+		    JButton accept=new JButton(IPMessenger.resources.getString("ftdPannelAccept"));	
+		    accept.setActionCommand("accept");
 		    accept.addActionListener(ftdLstener);
-		    JButton reject=new JButton("Reject");
+		    JButton reject=new JButton(IPMessenger.resources.getString("ftdPannelReject"));
+		    reject.setActionCommand("reject");
 		    reject.addActionListener(ftdLstener);
 		    decissionPanel.add(accept);
 		    decissionPanel.add(reject);

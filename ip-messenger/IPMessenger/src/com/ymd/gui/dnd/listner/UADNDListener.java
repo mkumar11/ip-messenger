@@ -24,6 +24,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.main.IPMessenger;
 import com.ymd.net.ft.FileClient;
 
 /**
@@ -99,10 +100,10 @@ public class UADNDListener extends DropTargetAdapter{
 		SimpleAttributeSet bold=new SimpleAttributeSet();
 		StyleConstants.setBold(bold, true);
 		try{
-			doc.insertString(doc.getLength(), "Me : ",bold);
+			doc.insertString(doc.getLength(), IPMessenger.resources.getString("myself")+" : ",bold);
 			doc.insertString(doc.getLength(), simpleFileName+"\n",null);					
 			JPanel statusPanel=new JPanel(new BorderLayout());				
-			JTextField jtf=new JTextField("Awaiting For File Transfer acceptance...");
+			JTextField jtf=new JTextField(IPMessenger.resources.getString("awaitingFTAcceptance"));
 			jtf.setEditable(false);
 			statusPanel.add(jtf,BorderLayout.CENTER);
 			Style style = doc.addStyle("StyleName", null);

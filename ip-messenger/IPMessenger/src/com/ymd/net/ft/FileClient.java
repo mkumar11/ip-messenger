@@ -17,6 +17,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 import com.ymd.gui.dnd.listner.UADNDListener.StatusPanels;
+import com.ymd.main.IPMessenger;
 
 /**
  * This establishes connection to the given IP and transfers the file
@@ -90,7 +91,7 @@ public class FileClient implements Runnable{
 						JPanel status=panels.getStatus();
 						Component[] statusComps=status.getComponents();
 						JTextField statustf=(JTextField)statusComps[0];
-						statustf.setText("Transfer Progress...");
+						statustf.setText(IPMessenger.resources.getString("progressFT"));
 						
 						JPanel progress=panels.getProgress();
 						JProgressBar jpb=new JProgressBar();
@@ -118,14 +119,14 @@ public class FileClient implements Runnable{
 							}
 						}
 						
-						statustf.setText("Transfer Completed..");
+						statustf.setText(IPMessenger.resources.getString("completedFT"));
 						
 						break;
 					}else if(cmd.toString().equalsIgnoreCase("reject")){
 						JPanel status=panels.getStatus();
 						Component[] statusComps=status.getComponents();
 						JTextField statustf=(JTextField)statusComps[0];
-						statustf.setText("Transfer Rejected...");
+						statustf.setText(IPMessenger.resources.getString("rejectedFT"));
 						break;
 					}
 				}				

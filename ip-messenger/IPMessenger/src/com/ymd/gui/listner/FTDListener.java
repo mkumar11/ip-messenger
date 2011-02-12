@@ -14,11 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
+import com.ymd.main.IPMessenger;
+
 /**
  * This is File Transfer Decision Listener Class.
  * 
  * @author yaragalla Muralidhar.
- * Modified today.
+ * 
  */
 public class FTDListener implements ActionListener{
 	
@@ -50,13 +52,13 @@ public class FTDListener implements ActionListener{
 		}
 		
 		if(actionCmd.equalsIgnoreCase("accept")){			
-			status.setText("Transfer Progress...");
+			status.setText(IPMessenger.resources.getString("progressFT"));
 			JProgressBar jpb=new JProgressBar() ;			
 			decissionPanel.setLayout(new BorderLayout());
 			decissionPanel.add(jpb, BorderLayout.CENTER);
 			
 		}else if(actionCmd.equalsIgnoreCase("reject")){
-			status.setText("Transfer Rejected By Me...");			
+			status.setText(IPMessenger.resources.getString("rejectedByMeFT"));			
 		}
 		try{
 			assocFsOs.write(actionCmd.getBytes());

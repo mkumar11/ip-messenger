@@ -16,6 +16,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.main.IPMessenger;
 
 /**
  * This is the Listener Class for chat window's 
@@ -50,7 +51,8 @@ public class ChatGUIUAListener extends KeyAdapter{
 			SimpleAttributeSet bold=new SimpleAttributeSet();
 			StyleConstants.setBold(bold, true);
 			try{
-				doc.insertString(doc.getLength(), "Me : ",bold);
+				doc.insertString(doc.getLength(), IPMessenger.resources.getString("myself")
+										+" : ",bold);
 				doc.insertString(doc.getLength(), messageTobeSent+"\n",null);
 				mainArea.setCaretPosition(doc.getLength());
 			}catch(BadLocationException ble){
@@ -65,8 +67,7 @@ public class ChatGUIUAListener extends KeyAdapter{
 				out.write(-2);
 			}catch(IOException ioe){
 				try{
-					String msg="The Person whom you are chatting to " +
-									"is not online anymore.";
+					String msg=IPMessenger.resources.getString("userNotOnline");
 					doc.insertString(doc.getLength(),msg+"\n",bold);
 					mainArea.setCaretPosition(doc.getLength());
 				}catch(BadLocationException ble){

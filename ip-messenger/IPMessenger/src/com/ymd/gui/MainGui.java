@@ -51,13 +51,13 @@ public class MainGui extends JFrame{
 		JDesktopPane dp=new JDesktopPane();		
 		dp.setLayout(new BorderLayout());
 		JMenuBar menuBar=new JMenuBar();
-		JMenu call=new JMenu("Call");
-		/*JMenuItem newCall=new JMenuItem("Place Call");
-		call.add(newCall);*/
+		/*JMenu call=new JMenu("Call");
+		JMenuItem newCall=new JMenuItem("Place Call");
+		call.add(newCall);
 		JMenuItem exit=new JMenuItem("Exit");
 		exit.addActionListener(new ExitActionListener(multicastSoc,group));
 		call.add(exit);
-		menuBar.add(call);
+		menuBar.add(call);*/
 		
 		
 		top =new DefaultMutableTreeNode("All Online Systems..");		
@@ -72,21 +72,25 @@ public class MainGui extends JFrame{
 		CompCenterCords cords=GUIUtil.getCompCenterCords(200, 550);
 		setLocation(cords.getX(), cords.getY());
 		
+		JMenu exit=new JMenu(IPMessenger.resources.getString("exit"));
+		exit.addActionListener(new ExitActionListener(multicastSoc,group));
+		menuBar.add(exit);
+		
 		// this needs cords so call after setting the location.
-		JMenu help=new JMenu("Help");
-		JMenuItem about=new JMenuItem("About IPMessenger");		
+		JMenu help=new JMenu(IPMessenger.resources.getString("help"));
+		JMenuItem about=new JMenuItem(IPMessenger.resources.getString("about"));		
 		final int x=getX();		
 		final int y=getY();
 		about.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){
-				About about=new About("About IPMessenger",x,y);
+				About about=new About(IPMessenger.resources.getString("about"),x,y);
 				about.setVisible(true);
 			}
 		});
 		help.add(about);
 		menuBar.add(help);
-		setJMenuBar(menuBar);
 		
+		setJMenuBar(menuBar);		
 		setVisible(true);
 	}
 
