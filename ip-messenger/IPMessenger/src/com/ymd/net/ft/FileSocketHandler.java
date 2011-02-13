@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -27,6 +28,7 @@ import com.ymd.gui.ChatGui;
 import com.ymd.gui.listner.FTDListener;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.main.resources.Dummy;
 import com.ymd.util.FileUtil;
 
 /**
@@ -64,6 +66,10 @@ public class FileSocketHandler implements Runnable{
 			StringBuffer fileName=new StringBuffer();
 			StringBuffer chatId=new StringBuffer();
 			StringBuffer fileSize=new StringBuffer();
+			
+			Properties confProp=new Properties();
+			confProp.load(Dummy.class.getResourceAsStream("IPMessengerConf.properties"));
+			String ftPath=confProp.getProperty("fileTransferFilePath");
 			
 			boolean fileNameChar=false;
 			boolean fileValue=false;
@@ -123,7 +129,10 @@ public class FileSocketHandler implements Runnable{
 					}else{
 						if(!associatedChatGui.isVisible())
 							associatedChatGui.setVisible(true);
-						file=FileUtil.createNonExistingFile(fileName.toString());
+						if(ftPath !=null && !ftPath.isEmpty())
+							file=FileUtil.createNonExistingFile(ftPath,fileName.toString());
+						else
+							file=FileUtil.createNonExistingFile(new File("").getAbsolutePath(),fileName.toString());
 						panels=dispalyFTIntializationMsg(fileName.toString(),fsOutputStream);
 						associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa().getDocument().getLength());
 						associatedChatGui.setExtendedState(0);

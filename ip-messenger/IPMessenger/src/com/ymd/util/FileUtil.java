@@ -19,12 +19,12 @@ public class FileUtil {
 	 * @param simpleName
 	 * @return File.
 	 */
-	public static File createNonExistingFile(String simpleName){		
-		File file=new File(simpleName);
+	public static File createNonExistingFile(String dir,String simpleName){		
+		File file=new File(dir+"\\"+simpleName);
 		int value=1;
 		if(file.exists()){			
 			String name=value+"_"+simpleName;
-			file=createNonExistingFile(name);
+			file=createNonExistingFile(dir,name);
 		}
 		return file;
 	}

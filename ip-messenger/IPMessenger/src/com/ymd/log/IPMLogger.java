@@ -2,10 +2,13 @@ package com.ymd.log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import com.ymd.main.resources.Dummy;
 
 public class IPMLogger {
 	
@@ -25,7 +28,17 @@ public class IPMLogger {
 	 */
 	public static IPMLogger getLogger(){
 		Logger logger=Logger.getLogger("log");
+		Properties confProp=new Properties();
+		String filePath=null;
+		try{
+			confProp.load(Dummy.class.getResourceAsStream("IPMessengerConf.properties"));
+			filePath=confProp.getProperty("logFilePath");
+		}catch(IOException ioe){
+			ioe.printStackTrace();
+		}		
 		File file=new File("");
+		if(filePath != null && !filePath.isEmpty()){
+			file=new File(filePath);		}
 		FileHandler fh=null;
 		try{
 			fh=new FileHandler(file.getAbsolutePath()+"/IPMessenger%g.log");
