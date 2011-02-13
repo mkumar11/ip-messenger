@@ -5,7 +5,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -69,7 +71,7 @@ public class ChatGui extends JFrame {
 	 * @param title
 	 * @param out
 	 */
-	public ChatGui(final Socket socket){		
+	public ChatGui(final Socket socket){
 		try{
 			out=socket.getOutputStream();
 		}catch(IOException ioe){			
@@ -77,9 +79,9 @@ public class ChatGui extends JFrame {
 		}		
 		JDesktopPane dp=new JDesktopPane();
 		dp.setLayout(null);
-		this.setContentPane(dp);
+		setContentPane(dp);
 		final ChatGui thisChat=this;
-		this.addWindowListener(new WindowAdapter(){
+		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				try{
 					out.write(-1);
@@ -88,12 +90,16 @@ public class ChatGui extends JFrame {
 				}
 				if(remoteUserClosed){
 					thisChat.dispose();
+					InetAddress remoteUserAdd=socket.getInetAddress();
+					String ip=remoteUserAdd.getHostAddress();
 					try{
 						out.close();
 						socket.close();
 					}catch(IOException ioe){
 						logger.error(ioe.getMessage(), ioe);
 					}
+					List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
+					chatIds.remove(id);
 					IPMessenger.chatGuiMap.remove(id);	
 				}
 			}

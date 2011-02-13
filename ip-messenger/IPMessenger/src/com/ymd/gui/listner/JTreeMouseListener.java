@@ -5,11 +5,14 @@ package com.ymd.gui.listner;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
+import com.ymd.main.IPMessenger;
 import com.ymd.net.chat.ChatClient;
 
 /**
@@ -35,25 +38,39 @@ public class JTreeMouseListener extends MouseAdapter{
 		if(e.getClickCount()==2){			
 			JTree jtree=(JTree)e.getComponent();
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode)jtree.getLastSelectedPathComponent();
+			String ip=null;
 			if(node.isLeaf()){
 				String nodeName=node.getUserObject().toString();
 				String tok[]=nodeName.split("\\.");
 				if (tok.length==4){
-					Thread client=new Thread(new ChatClient(nodeName,mainGui));
-					client.start();
+					ip=nodeName;
 				}else{
 					DefaultMutableTreeNode parentNode=(DefaultMutableTreeNode)node.getParent();
 					DefaultMutableTreeNode ipNode=parentNode.getFirstLeaf();
-					String ip=ipNode.getUserObject().toString();
-					Thread client=new Thread(new ChatClient(ip,mainGui));
-					client.start();
+					ip=ipNode.getUserObject().toString();					
 				}
 			}else{
 				DefaultMutableTreeNode ipNode=node.getFirstLeaf();
-				String ip=ipNode.getUserObject().toString();
+				ip=ipNode.getUserObject().toString();
+				
+			}
+			boolean establishConn=true;
+			if(IPMessenger.ipChatGuiIdMap.containsKey(ip)){
+				List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
+				for(String chatId:chatIds){
+					ChatGui chatGui=IPMessenger.chatGuiMap.get(chatId);
+					if((!chatGui.isVisible()) || (chatGui.getExtendedState()!=0)){
+						establishConn=false;
+						chatGui.setVisible(true);
+						chatGui.setExtendedState(0);
+						chatGui.toFront();
+					}
+				}
+			}
+			if(establishConn){
 				Thread client=new Thread(new ChatClient(ip,mainGui));
 				client.start();
-			}			
+			}
 		}
 	}
 }

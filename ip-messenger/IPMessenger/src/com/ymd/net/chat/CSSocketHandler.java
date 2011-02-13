@@ -3,7 +3,10 @@ package com.ymd.net.chat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -43,11 +46,18 @@ public class CSSocketHandler implements Runnable{
 	public void run() {
 		InputStream is=null;
 		OutputStream out=null;
+		ChatGui chat=null;
+		String chatId=null;
+		String ip=null;
 		try{			
 			is=socket.getInputStream();			
 			out=socket.getOutputStream();						
 			
-			ChatGui chat=new ChatGui(socket);
+			chat=new ChatGui(socket);
+			
+			InetAddress remoteUserAdd=socket.getInetAddress();
+			ip=remoteUserAdd.getHostAddress();
+			
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();			
 			SimpleAttributeSet bold=new SimpleAttributeSet();
@@ -64,9 +74,7 @@ public class CSSocketHandler implements Runnable{
 			while(true){									
 				int value=is.read();	
 				
-				if(value==-1){
-					chat.dispose();
-					IPMessenger.chatGuiMap.remove(chat.getId());
+				if(value==-1){					
 					break;
 				}
 				
@@ -116,7 +124,16 @@ public class CSSocketHandler implements Runnable{
 				// collects the ID bytes.
 				if(idValue){
 					if(((byte)value)==-2){
-						chat.setId(id.toString());						
+						chatId=id.toString();
+						chat.setId(chatId);	
+						if(IPMessenger.ipChatGuiIdMap.containsKey(ip)){
+							List<String> chatIdList=IPMessenger.ipChatGuiIdMap.get(ip);
+							chatIdList.add(chatId);				
+						}else{
+							List<String> chatIdList=new ArrayList<String>();
+							chatIdList.add(chatId);
+							IPMessenger.ipChatGuiIdMap.put(ip, chatIdList);
+						}
 						idValue=false;
 						userNameValue=true;
 					}else{
@@ -129,6 +146,10 @@ public class CSSocketHandler implements Runnable{
 			logger.info("Thread gracefully closed.");			
 		}finally{
 			try{
+				List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
+				chatIds.remove(chatId);
+				chat.dispose();
+				IPMessenger.chatGuiMap.remove(chat.getId());
 				is.close();
 				out.close();
 				socket.close();

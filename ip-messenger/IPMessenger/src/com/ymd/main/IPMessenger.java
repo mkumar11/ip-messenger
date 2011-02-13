@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -58,6 +59,7 @@ public class IPMessenger {
 	 * Holds all the ChatGui Instances.
 	 */
 	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>();
+	public static final Map<String,List<String>> ipChatGuiIdMap=new HashMap<String,List<String>>();
 	public static final URL iconUrl=Resource.class.getResource("icon.jpg");
 	public static ResourceBundle resources;
 	

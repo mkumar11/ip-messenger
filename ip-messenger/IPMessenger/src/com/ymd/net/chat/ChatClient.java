@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
@@ -50,6 +52,8 @@ public class ChatClient implements Runnable{
 		Socket socket=null;
 		InputStream in=null;
 		OutputStream out=null;
+		ChatGui chat=null;
+		String chatId=null;
 		try{
 			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
 					IPMessenger.resources.getString("establishingConnWait"));
@@ -58,7 +62,7 @@ public class ChatClient implements Runnable{
 			out=socket.getOutputStream();
 			
 			//sending the same id to the destination IP.
-			String chatId=GUID.generateId();			
+			chatId=GUID.generateId();			
 			out.write(chatId.getBytes());
 			out.write(-2);
 			
@@ -68,8 +72,16 @@ public class ChatClient implements Runnable{
 			out.write(-2);
 			
 			statusFrame.dispose();
-			ChatGui chat=new ChatGui(socket);			
+			chat=new ChatGui(socket);			
 			chat.setId(chatId);
+			if(IPMessenger.ipChatGuiIdMap.containsKey(ip)){
+				List<String> chatIdList=IPMessenger.ipChatGuiIdMap.get(ip);
+				chatIdList.add(chatId);				
+			}else{
+				List<String> chatIdList=new ArrayList<String>();
+				chatIdList.add(chatId);
+				IPMessenger.ipChatGuiIdMap.put(ip, chatIdList);
+			}
 			
 			JTextPane mainArea=chat.getMa();
 			Document doc=mainArea.getDocument();
@@ -85,9 +97,7 @@ public class ChatClient implements Runnable{
 			while(true){
 				int value=in.read();	
 				
-				if(value==-1){
-					chat.dispose();
-					IPMessenger.chatGuiMap.remove(chat.getId());
+				if(value==-1){					
 					break;
 				}
 				
@@ -133,7 +143,11 @@ public class ChatClient implements Runnable{
 		}catch(IOException ioe){
 			logger.info("Thread gracefully closed.");			
 		}finally{
-			try{				
+			try{	
+				List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
+				chatIds.remove(chatId);
+				chat.dispose();
+				IPMessenger.chatGuiMap.remove(chat.getId());
 				in.close();
 				out.close();
 				socket.close();	
