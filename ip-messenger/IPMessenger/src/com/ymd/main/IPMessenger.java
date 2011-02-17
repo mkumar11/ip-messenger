@@ -139,7 +139,7 @@ public class IPMessenger {
 				 InetAddress pacSenderAddr=recv.getAddress();
 				 if(tok[0].equalsIgnoreCase("hello")){					 
 					 String ip=pacSenderAddr.getHostAddress();			 
-					 if(!Util.localHost(ip)){ 
+					 if(!NetUtil.localHost(ip)){ 
 						 Packets.fireHandShakePacket(multicastSoc,group);
 						 if(!nodeMap.containsKey(ip)){
 							 String name=pacSenderAddr.getHostName();
@@ -167,7 +167,7 @@ public class IPMessenger {
 				 
 				 if(tok[0].equalsIgnoreCase("hands")){
 					 String ip=pacSenderAddr.getHostAddress();
-					 if(!Util.localHost(ip)){
+					 if(!NetUtil.localHost(ip)){
 						 if(!nodeMap.containsKey(ip)){
 							 String name=pacSenderAddr.getHostName();
 							 String user=Util.removePadding(tok[1]);						 
@@ -194,7 +194,7 @@ public class IPMessenger {
 				 
 				 if(tok[0].equalsIgnoreCase("goodb")){
 					 String ip=pacSenderAddr.getHostAddress();
-					 if(!Util.localHost(ip)){
+					 if(!NetUtil.localHost(ip)){
 						 DefaultMutableTreeNode node=nodeMap.get(ip); 
 						 if(node != null){
 							 int index=top.getIndex(node);
