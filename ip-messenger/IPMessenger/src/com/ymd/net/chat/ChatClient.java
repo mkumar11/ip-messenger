@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -17,6 +18,7 @@ import javax.swing.text.StyleConstants;
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
 import com.ymd.gui.util.GUIUtil;
+import com.ymd.gui.util.GuiIconBlink;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 import com.ymd.util.GUID;
@@ -94,10 +96,13 @@ public class ChatClient implements Runnable{
 			boolean userNameValue=true;
 			boolean msgValue=false;
 			
+			Thread blinkThread=null;
+			
 			while(true){
 				int value=in.read();	
 				
-				if(value==-1){					
+				if(value==-1){
+					chat.dispose();
 					break;
 				}
 				
@@ -111,13 +116,20 @@ public class ChatClient implements Runnable{
 						msg.append(ch);
 					}else if(((byte)value) !=-1){
 						try{
-							if(!chat.isVisible())
+							if(!chat.isVisible()){
 								chat.setVisible(true);
+								chat.toBack();
+							}
 							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
-							mainArea.setCaretPosition(doc.getLength());
-							chat.setExtendedState(0);
-							chat.toFront();
+							mainArea.setCaretPosition(doc.getLength());	
+							if(!chat.isFocused()){
+								if(blinkThread==null ||(!blinkThread.isAlive())){
+									ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
+									blinkThread=new Thread(new GuiIconBlink(chat,IPMessenger.blinkImages,icon.getImage()));
+									blinkThread.start();
+								}
+							}
 						}catch(BadLocationException ble){
 							logger.error(ble.getMessage(), ble);
 						}					
@@ -133,20 +145,19 @@ public class ChatClient implements Runnable{
 					}else{
 						chat.setRemoteUserName(userName.toString());
 						chat.setTitle(userName.toString());
-						chat.setVisible(true);
+						chat.setVisible(true); 
 						userNameValue=false;
 						msgValue=true;
 					}
-				}
-				
+				}				
 			}
 		}catch(IOException ioe){
 			logger.info("Thread gracefully closed.");			
 		}finally{
-			try{	
+			try{				
 				List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
-				chatIds.remove(chatId);
-				chat.dispose();
+				chatIds.remove(chatId);	
+				chat.setRemoteUserClosed(true);
 				IPMessenger.chatGuiMap.remove(chat.getId());
 				in.close();
 				out.close();
@@ -154,7 +165,6 @@ public class ChatClient implements Runnable{
 			}catch(IOException ioe){
 				logger.error(ioe.getMessage(), ioe);
 			}
-		}
-		
+		}		
 	}
 }

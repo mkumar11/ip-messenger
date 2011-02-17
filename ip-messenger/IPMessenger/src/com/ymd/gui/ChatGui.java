@@ -1,5 +1,7 @@
 package com.ymd.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -10,9 +12,9 @@ import java.net.Socket;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
@@ -27,7 +29,7 @@ import com.ymd.main.IPMessenger;
  * This is the GUI class for chat window.
  * 
  * @author yaragalla Muralidhar.
- *
+ * 
  */
 public class ChatGui extends JFrame {
 	
@@ -62,7 +64,7 @@ public class ChatGui extends JFrame {
 	/**
 	 * Remote user chat window status.
 	 */
-	private boolean remoteUserClosed;
+	private boolean remoteUserClosed=true;
 	
 	
 	/**
@@ -77,9 +79,10 @@ public class ChatGui extends JFrame {
 		}catch(IOException ioe){			
 			logger.error(ioe.getMessage(), ioe);
 		}		
-		JDesktopPane dp=new JDesktopPane();
-		dp.setLayout(null);
-		setContentPane(dp);
+		Container dp=getContentPane();
+		dp.setLayout(new BorderLayout());
+		JSplitPane jsp=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		jsp.setDividerLocation(300);
 		final ChatGui thisChat=this;
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
@@ -109,7 +112,8 @@ public class ChatGui extends JFrame {
 		ma.setEditable(false);
 		JScrollPane jspma=new JScrollPane(ma);		
 		jspma.setBounds(0, 0, 250, 300);
-		dp.add(jspma);
+		jsp.add(jspma,JSplitPane.TOP);
+		
 		
 		ua=new JTextArea();
 		ua.setToolTipText(IPMessenger.resources.getString("userAreaToolTip"));
@@ -119,14 +123,17 @@ public class ChatGui extends JFrame {
 		ua.addKeyListener(new ChatGUIUAListener(this));
 		new DropTarget(ua,new UADNDListener(socket.getInetAddress().getHostAddress(),this));
 		JScrollPane jspua=new JScrollPane(ua);		
-		jspua.setBounds(0, 300, 250, 100);		
-		dp.add(jspua);		
+		jspua.setBounds(0, 300, 250, 100);	
+		jsp.add(jspua,JSplitPane.BOTTOM);
+		
+		dp.add(jsp,BorderLayout.CENTER);		
 		
 		ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
 		setIconImage(icon.getImage());				
 		setSize(260, 450);		
 		CompCenterCords cords=GUIUtil.getCompCenterCords(260, 450);
 		setLocation(cords.getX(), cords.getY());
+		
 	}
 	
 	

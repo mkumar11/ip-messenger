@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -55,9 +56,11 @@ public class JTreeMouseListener extends MouseAdapter{
 				
 			}
 			boolean establishConn=true;
+			boolean isChatWindowExist=false;			
 			if(IPMessenger.ipChatGuiIdMap.containsKey(ip)){
 				List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
 				for(String chatId:chatIds){
+					isChatWindowExist=true;
 					ChatGui chatGui=IPMessenger.chatGuiMap.get(chatId);
 					if((!chatGui.isVisible()) || (chatGui.getExtendedState()!=0)){
 						establishConn=false;
@@ -67,6 +70,14 @@ public class JTreeMouseListener extends MouseAdapter{
 					}
 				}
 			}
+			
+			if(isChatWindowExist){
+				int option=JOptionPane.showConfirmDialog(mainGui,
+						IPMessenger.resources.getString("alreadyChatWindowExist"));
+				if(option != JOptionPane.YES_OPTION)
+					establishConn=false;
+			}
+			
 			if(establishConn){
 				Thread client=new Thread(new ChatClient(ip,mainGui));
 				client.start();

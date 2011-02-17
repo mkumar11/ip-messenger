@@ -18,14 +18,15 @@ public class FileUtil {
 	 * 
 	 * @param simpleName
 	 * @return File.
+	 * modified today
 	 */
-	public static File createNonExistingFile(String dir,String simpleName){		
-		File file=new File(dir+"\\"+simpleName);
-		int value=1;
-		if(file.exists()){			
-			String name=value+"_"+simpleName;
-			file=createNonExistingFile(dir,name);
-		}
-		return file;
+	public static File createNonExistingFile(String simpleName){            
+        File file=new File(simpleName);
+        int value=1;
+        if(file.exists()){                      
+                String name=value+"_"+simpleName;
+                file=createNonExistingFile(name);
+        }
+        return file;
 	}
 }

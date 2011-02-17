@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -15,6 +16,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.ymd.gui.ChatGui;
+import com.ymd.gui.util.GuiIconBlink;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
@@ -71,10 +73,13 @@ public class CSSocketHandler implements Runnable{
 			boolean msgValue=false;
 			boolean userNameValue=false;
 			
+			Thread blinkThread=null;
+			
 			while(true){									
 				int value=is.read();	
 				
-				if(value==-1){					
+				if(value==-1){
+					chat.dispose();
 					break;
 				}
 				
@@ -89,14 +94,19 @@ public class CSSocketHandler implements Runnable{
 					}else if(((byte)value) !=-1){
 						try{
 							if(!chat.isVisible()){
-								chat.setVisible(true);
-								
-							}
+								chat.setVisible(true);	
+								chat.toBack();
+							}							
 							doc.insertString(doc.getLength(), chat.getRemoteUserName()+" : ",bold);
 							doc.insertString(doc.getLength(), msg.toString()+"\n",null);
-							mainArea.setCaretPosition(doc.getLength());
-							chat.setExtendedState(0);
-							chat.toFront();
+							mainArea.setCaretPosition(doc.getLength());	
+							if(!chat.isFocused()){
+								if(blinkThread==null ||(!blinkThread.isAlive())){
+									ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
+									blinkThread=new Thread(new GuiIconBlink(chat,IPMessenger.blinkImages,icon.getImage()));
+									blinkThread.start();
+								}
+							}
 						}catch(BadLocationException ble){
 							logger.error(ble.getMessage(), ble);
 						}					
@@ -111,8 +121,7 @@ public class CSSocketHandler implements Runnable{
 						chat.setTitle(userName.toString());
 						String user=System.getProperty("user.name");
 						out.write(user.getBytes());
-						out.write(-2);
-						chat.setVisible(true);
+						out.write(-2);						
 						userNameValue=false;
 						msgValue=true;
 					}else{
@@ -147,9 +156,9 @@ public class CSSocketHandler implements Runnable{
 		}finally{
 			try{
 				List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
-				chatIds.remove(chatId);
-				chat.dispose();
+				chatIds.remove(chatId);				
 				IPMessenger.chatGuiMap.remove(chat.getId());
+				chat.setRemoteUserClosed(true);
 				is.close();
 				out.close();
 				socket.close();

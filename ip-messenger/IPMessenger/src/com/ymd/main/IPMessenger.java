@@ -14,6 +14,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,15 +61,32 @@ public class IPMessenger {
 	 */
 	public static final Map<String,ChatGui> chatGuiMap=new HashMap<String,ChatGui>();
 	public static final Map<String,List<String>> ipChatGuiIdMap=new HashMap<String,List<String>>();
-	public static final URL iconUrl=Resource.class.getResource("icon.jpg");
+	public static final URL iconUrl=Resource.class.getResource("icon.jpg");	
+	public static final List<Image> blinkImages=new ArrayList<Image>();
 	public static ResourceBundle resources;
 	
-	//static block which registers the cross look and feel.
+	//static block which registers the cross look and feel and does
+	//necessary initialization.
 	static{
-		try{
+		try{			
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			resources = ResourceBundle.getBundle("resources.IPMessenger", 
+			resources = ResourceBundle.getBundle("com.ymd.main.resources.IPMessenger", 
                     				Locale.getDefault());
+			URL urlOne=Resource.class.getResource("one.jpg");
+			URL urlTwo=Resource.class.getResource("two.jpg");
+			URL urlThree=Resource.class.getResource("three.jpg");
+			URL urlFour=Resource.class.getResource("four.jpg");
+			
+			ImageIcon one=new ImageIcon(urlOne);
+			ImageIcon two=new ImageIcon(urlTwo);
+			ImageIcon three=new ImageIcon(urlThree);
+			ImageIcon four=new ImageIcon(urlFour);
+			
+			blinkImages.add(one.getImage());
+			blinkImages.add(two.getImage());
+			blinkImages.add(three.getImage());
+			blinkImages.add(four.getImage());
+			
 		}catch(UnsupportedLookAndFeelException ulfe){
 			logger.error(ulfe.getMessage(), ulfe);
 		}catch(IllegalAccessException ie){
@@ -78,7 +96,7 @@ public class IPMessenger {
 		}catch(ClassNotFoundException cnfe){
 			logger.error(cnfe.getMessage(), cnfe);
 		}catch (MissingResourceException mre) {
-			logger.error("resources/IPMessenger.properties not found");            
+			logger.severe("resources/IPMessenger.properties not found");            
             System.exit(1);
         }
 	}

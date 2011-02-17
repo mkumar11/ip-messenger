@@ -2,20 +2,38 @@ package com.ymd.gui.util;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Properties;
 
+import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import com.ymd.main.IPMessenger;
 
 /**
  * Simple GUI utilities class.
  * 
  * @author yaragalla Muralidhar.
- * 
+ *  
  */
 public class GUIUtil {
+	
+	private static int currentX;
+	private static int currentY;
 	
 	/**
 	 * creates a non decorated JFrame to display simple messages.
@@ -60,11 +78,91 @@ public class GUIUtil {
 		int screenWidth=dim.width;
 		int heightMidPoint=screenHeight/2;
 		int widthMidPoint=screenWidth/2;
+		
 		int compX=widthMidPoint-(width/2);
-		cords.setX(compX);
+		int finalCompX=compX+currentX;
+		
 		int compY=heightMidPoint-(height/2);
-		cords.setY(compY);
+		int finalCompY=compY-currentY;		
+		
+		if(finalCompY==0 ||finalCompY<0){
+			currentY=0;
+			currentX=currentX+30;
+			finalCompY=compY;
+			finalCompX=finalCompX+currentX;
+		}
+		if((finalCompX+width)==screenWidth ||(finalCompX+width)>screenWidth){
+			currentX=0;
+			finalCompX=compX;
+		}
+		cords.setX(finalCompX);
+		cords.setY(finalCompY);
+		currentY=currentY+30;
 		return cords;
+	}
+	
+	/**
+	 * This creates a dialog which gives option to choose the
+	 * directory for the given property.
+	 * 
+	 * @param propkey - property name.
+	 * @param fileUrl - properties file url.
+	 * @param title - title of the dialog.
+	 * @param owner - owner of the dialog.
+	 */
+	public void createDirDialog(final String propkey,final String filePath,String title,Frame owner){		
+		final JDialog jd=new JDialog(owner,title,true);		
+		Container container=jd.getContentPane();
+		container.setLayout(null);
+		final JTextField pathTextField=new JTextField();
+		Properties confProp=null;
+		try{			
+			File confFile=new File(filePath);			
+			FileInputStream fis=new FileInputStream(confFile);
+			confProp=new Properties();
+			confProp.load(fis);
+		}catch(IOException ioe){
+			//logger.error(ioe.getMessage(), ioe);
+		}
+		String value=confProp.getProperty(propkey);		
+		pathTextField.setText(value);
+		pathTextField.setEditable(false);
+		pathTextField.setBounds(20, 30, 200, 30);
+		JButton browse=new JButton(IPMessenger.resources.getString("optionsDialogeBrowse"));		
+		browse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){
+				JFileChooser dirChooser=new JFileChooser();
+				dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);				
+				int returnVal = dirChooser.showOpenDialog(jd);
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {			       
+			      pathTextField.setText(dirChooser.getSelectedFile().getAbsolutePath());			    	
+			    }
+			}
+		});
+		browse.setBounds(230, 30, 100, 30);
+		JButton okButton=new JButton(IPMessenger.resources.getString("optionsDialogeOk"));
+		okButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){							
+				try{
+					File confFile=new File(filePath);
+					FileWriter confWriter=new FileWriter(confFile);
+					Properties confProp=new Properties();
+					confProp.setProperty(propkey, pathTextField.getText());					
+					confProp.store(confWriter, null);
+					jd.dispose();
+				}catch(IOException ioe){
+					//logger.error(ioe.getMessage(),ioe);
+				}
+				
+			}
+		});
+		okButton.setBounds(110, 70, 100, 30);
+		container.add(pathTextField);
+		container.add(browse);
+		container.add(okButton);
+		//jd.setLocationRelativeTo(this);
+		jd.setSize(350, 150);		
+		jd.setVisible(true);		
 	}
 	
 	/**

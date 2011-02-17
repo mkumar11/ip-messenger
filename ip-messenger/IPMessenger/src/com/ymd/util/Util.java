@@ -52,9 +52,13 @@ public class Util {
 	 */
 	public static boolean localHost(String ip)throws UnknownHostException{
 		InetAddress localHost=InetAddress.getLocalHost();
-		String local=localHost.getHostAddress();
-		if(ip.equals(local))
-			return true;
+		String localHostName=localHost.getHostName();
+		InetAddress[] localAddresses=InetAddress.getAllByName(localHostName);
+		for(InetAddress add:localAddresses){
+			if(ip.equals(add.getHostAddress())){
+				return true;
+			}
+		}
 		return false;
 	}
 

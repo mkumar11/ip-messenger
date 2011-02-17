@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Properties;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -26,9 +26,9 @@ import javax.swing.text.StyledDocument;
 
 import com.ymd.gui.ChatGui;
 import com.ymd.gui.listner.FTDListener;
+import com.ymd.gui.util.GuiIconBlink;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
-import com.ymd.main.resources.Dummy;
 import com.ymd.util.FileUtil;
 
 /**
@@ -65,16 +65,14 @@ public class FileSocketHandler implements Runnable{
 			FileOutputStream fos=null;			
 			StringBuffer fileName=new StringBuffer();
 			StringBuffer chatId=new StringBuffer();
-			StringBuffer fileSize=new StringBuffer();
-			
-			Properties confProp=new Properties();
-			confProp.load(Dummy.class.getResourceAsStream("IPMessengerConf.properties"));
-			String ftPath=confProp.getProperty("fileTransferFilePath");
+			StringBuffer fileSize=new StringBuffer();			
 			
 			boolean fileNameChar=false;
 			boolean fileValue=false;
 			boolean chatIdChar=true;
 			boolean fileSizeChar=false;
+			
+			Thread blinkThread=null;
 			
 			JProgressBar jpb=null;
 			int count=1;
@@ -123,22 +121,25 @@ public class FileSocketHandler implements Runnable{
 				
 				//collects the file name bytes.
 				if(fileNameChar){
-					if(((byte)value) != -2){						
-						char ch=(char)value;
-						fileName.append(ch);
+					if(((byte)value) != -2){                                                
+                        char ch=(char)value;
+                        fileName.append(ch);
 					}else{
-						if(!associatedChatGui.isVisible())
-							associatedChatGui.setVisible(true);
-						if(ftPath !=null && !ftPath.isEmpty())
-							file=FileUtil.createNonExistingFile(ftPath,fileName.toString());
-						else
-							file=FileUtil.createNonExistingFile(new File("").getAbsolutePath(),fileName.toString());
-						panels=dispalyFTIntializationMsg(fileName.toString(),fsOutputStream);
-						associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa().getDocument().getLength());
-						associatedChatGui.setExtendedState(0);
-						associatedChatGui.toFront();
-						fileNameChar=false;
-						fileSizeChar=true;
+                        if(!associatedChatGui.isVisible())
+                                associatedChatGui.setVisible(true);
+                        file=FileUtil.createNonExistingFile(fileName.toString());
+                        panels=dispalyFTIntializationMsg(fileName.toString(),fsOutputStream);
+                        associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa()
+                        		.getDocument().getLength()); 
+                        if(!associatedChatGui.isFocused()){
+							if(blinkThread==null ||(!blinkThread.isAlive())){
+								ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
+								blinkThread=new Thread(new GuiIconBlink(associatedChatGui,IPMessenger.blinkImages,icon.getImage()));
+								blinkThread.start();
+							}
+						}
+                        fileNameChar=false;
+                        fileSizeChar=true;
 					}
 				}
 				

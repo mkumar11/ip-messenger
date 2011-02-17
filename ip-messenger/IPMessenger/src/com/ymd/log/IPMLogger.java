@@ -2,24 +2,26 @@ package com.ymd.log;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import com.ymd.main.resources.Dummy;
-
-public class IPMLogger {
+/**
+ * This is the Logger for IPMessenger.
+ * @author yaragamu
+ * modified today.
+ */
+public class IPMLogger extends Logger{	
 	
-	private Logger logger;
+	private static IPMLogger ipmLogger;
 	
 	/**
 	 * Constructs IPMLogger Instance.
 	 * @param logger - Logger.
 	 */
-	private IPMLogger(Logger logger){
-		this.logger=logger;
+	private IPMLogger(String name){
+		super(name,null );
 	}
 	
 	/**
@@ -27,36 +29,22 @@ public class IPMLogger {
 	 * @return - IPMLogger
 	 */
 	public static IPMLogger getLogger(){
-		Logger logger=Logger.getLogger("log");
-		Properties confProp=new Properties();
-		String filePath=null;
-		try{
-			confProp.load(Dummy.class.getResourceAsStream("IPMessengerConf.properties"));
-			filePath=confProp.getProperty("logFilePath");
-		}catch(IOException ioe){
-			ioe.printStackTrace();
-		}		
-		File file=new File("");
-		if(filePath != null && !filePath.isEmpty()){
-			file=new File(filePath);		}
-		FileHandler fh=null;
-		try{
-			fh=new FileHandler(file.getAbsolutePath()+"/IPMessenger%g.log");
-			fh.setFormatter(new SimpleFormatter());
-		}catch(IOException ioe){
-			ioe.printStackTrace();
+		if(ipmLogger == null){
+			IPMLogger logger=new IPMLogger("log");					
+			File file=new File("");					
+			FileHandler fh=null;
+			try{
+				fh=new FileHandler(file.getAbsolutePath()+"/IPMessenger%g.log");
+				fh.setFormatter(new SimpleFormatter());
+			}catch(IOException ioe){
+				ioe.printStackTrace();
+			}
+			logger.addHandler(fh);
+			ipmLogger=logger;
+			return ipmLogger;
 		}
-		logger.addHandler(fh);
-		return new IPMLogger(logger);
-	}
-	
-	/**
-	 * This logs message at info level.
-	 * @param msg - message to be logged.
-	 */
-	public void info(String msg){
-		logger.info(msg);
-	}
+		return ipmLogger;
+	}	
 	
 	/**
 	 * This logs message at SEVERE level.
@@ -64,14 +52,10 @@ public class IPMLogger {
 	 * @param thrown - Throwable.
 	 */
 	public void error(String msg,Throwable thrown){
-		logger.log(Level.SEVERE, msg, thrown);
-	}
+		StackTraceElement[]stElement=new Throwable().getStackTrace();
+		String className=stElement[1].getClassName();
+		String methodName=stElement[1].getMethodName();		
+		logp(Level.SEVERE,className,methodName,msg,thrown); 		
+	}	
 	
-	/**
-	 * This logs message at SEVERE level.
-	 * @param msg - message to be logged.
-	 */
-	public void error(String msg){
-		logger.log(Level.SEVERE, msg);
-	}
 }
