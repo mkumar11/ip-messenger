@@ -9,6 +9,9 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
@@ -42,6 +46,7 @@ import com.ymd.log.IPMLogger;
 import com.ymd.net.Packets;
 import com.ymd.net.chat.ChatServer;
 import com.ymd.net.ft.FileServer;
+import com.ymd.util.Constants;
 import com.ymd.util.NetUtil;
 import com.ymd.util.Util;
 
@@ -86,6 +91,50 @@ public class IPMessenger {
 			blinkImages.add(two.getImage());
 			blinkImages.add(three.getImage());
 			blinkImages.add(four.getImage());
+			
+			//setting up the required Properties.
+			Properties confProps=new Properties();
+			String userHomeDir=System.getProperty("user.home");
+			File dir=new File(userHomeDir+"\\"+Constants.CONF_DIR);
+			if(!dir.exists()){
+				dir.mkdir();
+			}
+			File confFile=new File(userHomeDir+"\\"+Constants.CONF_DIR+"\\"+Constants.CONF_FILE_NAME);
+			if(!confFile.exists()){
+				try{
+					confFile.createNewFile();
+				}catch(Exception ioe){
+					logger.error(ioe.getMessage(), ioe);
+				}
+			}
+			FileInputStream fis=null;
+			try{
+				fis=new FileInputStream(confFile);
+			}catch(FileNotFoundException fnfe){
+				logger.error(fnfe.getMessage(), fnfe);
+			}
+			try{
+				confProps.load(fis);
+			}catch(IOException ioe){
+				logger.error(ioe.getMessage(), ioe);
+			}
+			String downloadFileDir=confProps.getProperty(Constants.DOWNLOAD_FILE_DIR_KEY);
+			if(downloadFileDir == null || downloadFileDir.isEmpty()){
+				downloadFileDir=new File("").getAbsolutePath();
+			}
+			System.setProperty(Constants.DOWNLOAD_FILE_DIR_KEY, downloadFileDir);
+			
+			String logFileDir=confProps.getProperty(Constants.LOG_FILE_DIR_KEY);
+			if(logFileDir == null || logFileDir.isEmpty()){
+				logFileDir=new File("").getAbsolutePath();
+			}
+			System.setProperty(Constants.LOG_FILE_DIR_KEY, logFileDir);
+			
+			String chatFileDir=confProps.getProperty(Constants.CHAT_FILE_DIR_KEY);
+			if(chatFileDir == null || chatFileDir.isEmpty()){
+				chatFileDir=new File("").getAbsolutePath();
+			}
+			System.setProperty(Constants.CHAT_FILE_DIR_KEY, chatFileDir);
 			
 		}catch(UnsupportedLookAndFeelException ulfe){
 			logger.error(ulfe.getMessage(), ulfe);

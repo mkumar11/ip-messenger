@@ -160,9 +160,23 @@ public class GUIUtil {
 		container.add(pathTextField);
 		container.add(browse);
 		container.add(okButton);
-		//jd.setLocationRelativeTo(this);
+		jd.setLocationRelativeTo(owner);
 		jd.setSize(350, 150);		
 		jd.setVisible(true);		
+	}
+	
+	/**
+	 * This saves the Properties to the given file path.
+	 * @param props - Properties.
+	 * @param absoluteFilePath - complete file name.
+	 * @throws IOException
+	 */
+	public static void saveProperties(Properties props,String absoluteFilePath)throws IOException{
+		File propFile=new File(absoluteFilePath);
+		FileWriter confWriter=new FileWriter(propFile);
+		props.store(confWriter, null);
+		confWriter.flush();
+		confWriter.close();
 	}
 	
 	/**

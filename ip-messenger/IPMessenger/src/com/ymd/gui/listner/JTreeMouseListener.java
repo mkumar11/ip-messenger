@@ -62,8 +62,7 @@ public class JTreeMouseListener extends MouseAdapter{
 				for(String chatId:chatIds){
 					isChatWindowExist=true;
 					ChatGui chatGui=IPMessenger.chatGuiMap.get(chatId);
-					if((!chatGui.isVisible()) || (chatGui.getExtendedState()!=0)){
-						establishConn=false;
+					if((!chatGui.isVisible()) || (chatGui.getExtendedState()!=0)){						
 						chatGui.setVisible(true);
 						chatGui.setExtendedState(0);
 						chatGui.toFront();

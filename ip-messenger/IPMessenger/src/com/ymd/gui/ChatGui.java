@@ -13,6 +13,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
@@ -20,6 +23,7 @@ import javax.swing.JTextPane;
 
 import com.ymd.gui.dnd.listner.UADNDListener;
 import com.ymd.gui.listner.ChatGUIUAListener;
+import com.ymd.gui.listner.ChatSaveListener;
 import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.log.IPMLogger;
@@ -80,7 +84,7 @@ public class ChatGui extends JFrame {
 			logger.error(ioe.getMessage(), ioe);
 		}		
 		Container dp=getContentPane();
-		dp.setLayout(new BorderLayout());
+		dp.setLayout(new BorderLayout());		
 		JSplitPane jsp=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		jsp.setDividerLocation(300);
 		final ChatGui thisChat=this;
@@ -126,7 +130,16 @@ public class ChatGui extends JFrame {
 		jspua.setBounds(0, 300, 250, 100);	
 		jsp.add(jspua,JSplitPane.BOTTOM);
 		
-		dp.add(jsp,BorderLayout.CENTER);		
+		dp.add(jsp,BorderLayout.CENTER);	
+		
+		JMenuBar menuBar=new JMenuBar();
+		JMenu file=new JMenu(IPMessenger.resources.getString("file"));
+		JMenuItem saveChat=new JMenuItem(IPMessenger.resources.getString("saveChat"));
+		saveChat.addActionListener(new ChatSaveListener(ma));
+		file.add(saveChat);		
+		menuBar.add(file);
+		
+		setJMenuBar(menuBar);
 		
 		ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
 		setIconImage(icon.getImage());				
