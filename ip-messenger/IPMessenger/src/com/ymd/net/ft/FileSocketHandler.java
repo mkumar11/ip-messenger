@@ -29,6 +29,7 @@ import com.ymd.gui.listner.FTDListener;
 import com.ymd.gui.util.GuiIconBlink;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.util.Constants;
 import com.ymd.util.FileUtil;
 
 /**
@@ -127,7 +128,8 @@ public class FileSocketHandler implements Runnable{
 					}else{
                         if(!associatedChatGui.isVisible())
                                 associatedChatGui.setVisible(true);
-                        file=FileUtil.createNonExistingFile(fileName.toString());
+                        String dir=System.getProperty(Constants.DOWNLOAD_FILE_DIR_KEY);
+                        file=FileUtil.createNonExistingFile(fileName.toString(),dir);
                         panels=dispalyFTIntializationMsg(fileName.toString(),fsOutputStream);
                         associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa()
                         		.getDocument().getLength()); 

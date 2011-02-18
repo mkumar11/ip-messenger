@@ -9,7 +9,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
@@ -22,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
 
 /**
@@ -31,6 +31,8 @@ import com.ymd.main.IPMessenger;
  *  
  */
 public class GUIUtil {
+	
+	private static IPMLogger logger=IPMLogger.getLogger();
 	
 	private static int currentX;
 	private static int currentY;
@@ -110,21 +112,13 @@ public class GUIUtil {
 	 * @param title - title of the dialog.
 	 * @param owner - owner of the dialog.
 	 */
-	public void createDirDialog(final String propkey,final String filePath,String title,Frame owner){		
+	public static void createDirDialog(final String propkey,final String filePath,String title,Frame owner){		
 		final JDialog jd=new JDialog(owner,title,true);		
 		Container container=jd.getContentPane();
 		container.setLayout(null);
 		final JTextField pathTextField=new JTextField();
-		Properties confProp=null;
-		try{			
-			File confFile=new File(filePath);			
-			FileInputStream fis=new FileInputStream(confFile);
-			confProp=new Properties();
-			confProp.load(fis);
-		}catch(IOException ioe){
-			//logger.error(ioe.getMessage(), ioe);
-		}
-		String value=confProp.getProperty(propkey);		
+		final Properties confProp=new Properties();
+		String value=System.getProperty(propkey);	
 		pathTextField.setText(value);
 		pathTextField.setEditable(false);
 		pathTextField.setBounds(20, 30, 200, 30);
@@ -134,8 +128,11 @@ public class GUIUtil {
 				JFileChooser dirChooser=new JFileChooser();
 				dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);				
 				int returnVal = dirChooser.showOpenDialog(jd);
-			    if(returnVal == JFileChooser.APPROVE_OPTION) {			       
-			      pathTextField.setText(dirChooser.getSelectedFile().getAbsolutePath());			    	
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {
+			      String selectedPath=dirChooser.getSelectedFile().getAbsolutePath();	
+			      pathTextField.setText(selectedPath);
+			      System.setProperty(propkey, selectedPath);
+			      confProp.setProperty(propkey, selectedPath);
 			    }
 			}
 		});
@@ -144,14 +141,10 @@ public class GUIUtil {
 		okButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){							
 				try{
-					File confFile=new File(filePath);
-					FileWriter confWriter=new FileWriter(confFile);
-					Properties confProp=new Properties();
-					confProp.setProperty(propkey, pathTextField.getText());					
-					confProp.store(confWriter, null);
+					saveProperties( confProp,filePath);					
 					jd.dispose();
 				}catch(IOException ioe){
-					//logger.error(ioe.getMessage(),ioe);
+					logger.error(ioe.getMessage(),ioe);
 				}
 				
 			}

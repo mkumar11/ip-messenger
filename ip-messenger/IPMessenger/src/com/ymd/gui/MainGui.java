@@ -23,6 +23,7 @@ import com.ymd.gui.listner.JTreeMouseListener;
 import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.main.IPMessenger;
+import com.ymd.util.Constants;
 
 /**
  * This is the main GUI window.
@@ -77,7 +78,42 @@ public class MainGui extends JFrame{
 		JMenuItem exit=new JMenuItem(IPMessenger.resources.getString("exit"));
 		exit.addActionListener(new ExitActionListener(multicastSoc,group));
 		exitMenu.add(exit);
-		menuBar.add(exitMenu);		
+		menuBar.add(exitMenu);
+		
+		final MainGui mainGui=this;
+		JMenu settings=new JMenu(IPMessenger.resources.getString("settings"));
+		JMenuItem downloaddir=new JMenuItem(IPMessenger.resources.getString("downloadDirectory"));
+		JMenuItem logdir=new JMenuItem(IPMessenger.resources.getString("chooseLogFileDirectory"));
+		JMenuItem chatdir=new JMenuItem(IPMessenger.resources.getString("chooseChatFileDir"));
+		downloaddir.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){				
+				String filePath=IPMessenger.confFilePath;
+				GUIUtil.createDirDialog(Constants.DOWNLOAD_FILE_DIR_KEY, filePath,
+						IPMessenger.resources.getString("downloadDirectory"), mainGui);
+			}
+		});
+		
+		logdir.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){				
+				String filePath=IPMessenger.confFilePath;
+				GUIUtil.createDirDialog(Constants.LOG_FILE_DIR_KEY, filePath,
+						IPMessenger.resources.getString("chooseLogFileDirectory"), mainGui);
+			}
+		});
+		
+		chatdir.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae){				
+				String filePath=IPMessenger.confFilePath;
+				GUIUtil.createDirDialog(Constants.CHAT_FILE_DIR_KEY, filePath,
+						IPMessenger.resources.getString("chooseChatFileDir"), mainGui);
+			}
+		});
+		settings.add(downloaddir);
+		settings.add(logdir);
+		settings.add(chatdir);
+		menuBar.add(settings);
+		
+		
 		
 		// this needs cords so call after setting the location.
 		JMenu help=new JMenu(IPMessenger.resources.getString("help"));

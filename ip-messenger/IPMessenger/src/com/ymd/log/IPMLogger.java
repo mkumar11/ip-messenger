@@ -1,11 +1,12 @@
 package com.ymd.log;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import com.ymd.util.Constants;
 
 /**
  * This is the Logger for IPMessenger.
@@ -31,10 +32,10 @@ public class IPMLogger extends Logger{
 	public static IPMLogger getLogger(){
 		if(ipmLogger == null){
 			IPMLogger logger=new IPMLogger("log");					
-			File file=new File("");					
+			String filePath=System.getProperty(Constants.LOG_FILE_DIR_KEY)	;			
 			FileHandler fh=null;
 			try{
-				fh=new FileHandler(file.getAbsolutePath()+"/IPMessenger%g.log");
+				fh=new FileHandler(filePath+"/IPMessenger%g.log");
 				fh.setFormatter(new SimpleFormatter());
 			}catch(IOException ioe){
 				ioe.printStackTrace();

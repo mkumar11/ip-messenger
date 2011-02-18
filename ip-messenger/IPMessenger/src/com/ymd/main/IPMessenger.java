@@ -69,6 +69,7 @@ public class IPMessenger {
 	public static final URL iconUrl=Resource.class.getResource("icon.jpg");	
 	public static final List<Image> blinkImages=new ArrayList<Image>();
 	public static ResourceBundle resources;
+	public static String confFilePath;
 	
 	//static block which registers the cross look and feel and does
 	//necessary initialization.
@@ -99,7 +100,8 @@ public class IPMessenger {
 			if(!dir.exists()){
 				dir.mkdir();
 			}
-			File confFile=new File(userHomeDir+"\\"+Constants.CONF_DIR+"\\"+Constants.CONF_FILE_NAME);
+			confFilePath=userHomeDir+"\\"+Constants.CONF_DIR+"\\"+Constants.CONF_FILE_NAME;
+			File confFile=new File(confFilePath);
 			if(!confFile.exists()){
 				try{
 					confFile.createNewFile();
