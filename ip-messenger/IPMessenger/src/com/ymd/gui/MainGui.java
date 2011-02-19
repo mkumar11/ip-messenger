@@ -161,7 +161,7 @@ public class MainGui extends JFrame{
 			jta.setText("\n\nCreator : Muralidhar Yaragalla.\nEmail : " +
 					"yaragallamurali@gmail.com\nCode Site : " +
 					"http://code.google.com/p/ip-messenger/ \n" +
-					"Version : 1.2");
+					"Version : 1.2.1");
 			jta.setEditable(false);
 			container.add(jta,BorderLayout.CENTER);
 			ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);

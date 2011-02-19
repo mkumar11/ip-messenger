@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.util.Constants;
 
 /**
  * Simple GUI utilities class.
@@ -116,8 +117,7 @@ public class GUIUtil {
 		final JDialog jd=new JDialog(owner,title,true);		
 		Container container=jd.getContentPane();
 		container.setLayout(null);
-		final JTextField pathTextField=new JTextField();
-		final Properties confProp=new Properties();
+		final JTextField pathTextField=new JTextField();		
 		String value=System.getProperty(propkey);	
 		pathTextField.setText(value);
 		pathTextField.setEditable(false);
@@ -132,7 +132,7 @@ public class GUIUtil {
 			      String selectedPath=dirChooser.getSelectedFile().getAbsolutePath();	
 			      pathTextField.setText(selectedPath);
 			      System.setProperty(propkey, selectedPath);
-			      confProp.setProperty(propkey, selectedPath);
+			     
 			    }
 			}
 		});
@@ -141,7 +141,7 @@ public class GUIUtil {
 		okButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){							
 				try{
-					saveProperties( confProp,filePath);					
+					saveProperties(filePath);					
 					jd.dispose();
 				}catch(IOException ioe){
 					logger.error(ioe.getMessage(),ioe);
@@ -160,11 +160,18 @@ public class GUIUtil {
 	
 	/**
 	 * This saves the Properties to the given file path.
-	 * @param props - Properties.
+	 * 
 	 * @param absoluteFilePath - complete file name.
 	 * @throws IOException
 	 */
-	public static void saveProperties(Properties props,String absoluteFilePath)throws IOException{
+	public static void saveProperties(String absoluteFilePath)throws IOException{
+		Properties props=new Properties();
+		String downloadDir=System.getProperty(Constants.DOWNLOAD_FILE_DIR_KEY);
+		props.setProperty(Constants.DOWNLOAD_FILE_DIR_KEY, downloadDir);
+		String logDir=System.getProperty(Constants.LOG_FILE_DIR_KEY);
+		props.setProperty(Constants.LOG_FILE_DIR_KEY, logDir);
+		String chatDir=System.getProperty(Constants.CHAT_FILE_DIR_KEY);
+		props.setProperty(Constants.CHAT_FILE_DIR_KEY, chatDir);
 		File propFile=new File(absoluteFilePath);
 		FileWriter confWriter=new FileWriter(propFile);
 		props.store(confWriter, null);

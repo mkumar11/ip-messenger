@@ -59,7 +59,7 @@ import com.ymd.util.Util;
  */
 public class IPMessenger {
 	
-	private static IPMLogger logger=IPMLogger.getLogger();
+	private static IPMLogger logger;
 	
 	/**
 	 * Holds all the ChatGui Instances.
@@ -106,19 +106,19 @@ public class IPMessenger {
 				try{
 					confFile.createNewFile();
 				}catch(Exception ioe){
-					logger.error(ioe.getMessage(), ioe);
+					ioe.printStackTrace();
 				}
 			}
 			FileInputStream fis=null;
 			try{
 				fis=new FileInputStream(confFile);
 			}catch(FileNotFoundException fnfe){
-				logger.error(fnfe.getMessage(), fnfe);
+				fnfe.printStackTrace();
 			}
 			try{
 				confProps.load(fis);
 			}catch(IOException ioe){
-				logger.error(ioe.getMessage(), ioe);
+				ioe.printStackTrace();
 			}
 			String downloadFileDir=confProps.getProperty(Constants.DOWNLOAD_FILE_DIR_KEY);
 			if(downloadFileDir == null || downloadFileDir.isEmpty()){
@@ -131,6 +131,7 @@ public class IPMessenger {
 				logFileDir=new File("").getAbsolutePath();
 			}
 			System.setProperty(Constants.LOG_FILE_DIR_KEY, logFileDir);
+			logger=IPMLogger.getLogger();
 			
 			String chatFileDir=confProps.getProperty(Constants.CHAT_FILE_DIR_KEY);
 			if(chatFileDir == null || chatFileDir.isEmpty()){
