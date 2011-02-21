@@ -111,13 +111,13 @@ public class UADNDListener extends DropTargetAdapter{
 			statusPanel.add(jtf,BorderLayout.CENTER);
 			Style style = doc.addStyle("StyleName", null);
 		    StyleConstants.setComponent(style, statusPanel);
-		    doc.insertString(doc.getLength(), "ignored text"+"\n", style);	
+		    doc.insertString(doc.getLength(), "File Transfer"+"\n", style);	
 		    panels.setStatus(statusPanel);
 		    
 		    JPanel progressPanel=new JPanel(new BorderLayout());			
 			Style stylePP = doc.addStyle("StyleName", null);
 		    StyleConstants.setComponent(stylePP, progressPanel);
-		    doc.insertString(doc.getLength(), "ignored text"+"\n", stylePP);	
+		    doc.insertString(doc.getLength(), "File Transfer"+"\n", stylePP);	
 		    panels.setProgress(progressPanel);
 		    
 		}catch(BadLocationException ble){

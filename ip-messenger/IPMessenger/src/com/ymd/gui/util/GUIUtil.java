@@ -18,6 +18,7 @@ import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -113,10 +114,14 @@ public class GUIUtil {
 	 * @param title - title of the dialog.
 	 * @param owner - owner of the dialog.
 	 */
-	public static void createDirDialog(final String propkey,final String filePath,String title,Frame owner){		
+	public static void createDirDialog(final String propkey,final String filePath,String title,Frame owner){
+		
 		final JDialog jd=new JDialog(owner,title,true);		
 		Container container=jd.getContentPane();
 		container.setLayout(null);
+		final JLabel errorLabel=new JLabel();
+		errorLabel.setForeground(Color.RED);
+		errorLabel.setBounds(20, 5, 300, 20);
 		final JTextField pathTextField=new JTextField();		
 		String value=System.getProperty(propkey);	
 		pathTextField.setText(value);
@@ -129,9 +134,15 @@ public class GUIUtil {
 				dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);				
 				int returnVal = dirChooser.showOpenDialog(jd);
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
-			      String selectedPath=dirChooser.getSelectedFile().getAbsolutePath();	
+			      File selectedFile=dirChooser.getSelectedFile();
+			      String selectedPath=selectedFile.getAbsolutePath();	
 			      pathTextField.setText(selectedPath);
-			      System.setProperty(propkey, selectedPath);
+			      if(!selectedFile.canWrite()){
+			    	  errorLabel.setText(IPMessenger.resources.getString("noWriteAccess"));			    	  
+			      }else{
+			    	  errorLabel.setText("");
+			    	  System.setProperty(propkey, selectedPath);
+			      }
 			     
 			    }
 			}
@@ -141,8 +152,10 @@ public class GUIUtil {
 		okButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae){							
 				try{
-					saveProperties(filePath);					
-					jd.dispose();
+					if(errorLabel.getText().isEmpty()){
+						saveProperties(filePath);					
+						jd.dispose();
+					}
 				}catch(IOException ioe){
 					logger.error(ioe.getMessage(),ioe);
 				}
@@ -150,6 +163,7 @@ public class GUIUtil {
 			}
 		});
 		okButton.setBounds(110, 70, 100, 30);
+		container.add(errorLabel);
 		container.add(pathTextField);
 		container.add(browse);
 		container.add(okButton);

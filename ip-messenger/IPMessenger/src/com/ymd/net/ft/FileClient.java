@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import com.ymd.gui.dnd.listner.UADNDListener.StatusPanels;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.util.Constants;
 
 /**
  * This establishes connection to the given IP and transfers the file
@@ -56,7 +57,7 @@ public class FileClient implements Runnable{
 		InputStream sockestIs=null;
 		try{			
 			String simpleFileName=file.getName();			
-			fileSock=new Socket(ip,1984);
+			fileSock=new Socket(ip,Constants.FILE_CLIENT_PORT);
 			socketOs=fileSock.getOutputStream();
 			sockestIs=fileSock.getInputStream();
 			FileInputStream fis=new FileInputStream(file);

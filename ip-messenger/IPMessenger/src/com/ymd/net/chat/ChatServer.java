@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.ymd.log.IPMLogger;
+import com.ymd.util.Constants;
 
 
 /**
@@ -20,7 +21,7 @@ public class ChatServer implements Runnable{
 	@Override
 	public void run() {
 		try{
-			ServerSocket ss=new ServerSocket(1986);
+			ServerSocket ss=new ServerSocket(Constants.CHAT_SERVER_PORT);
 			while(true){
 				Socket s=ss.accept();
 				Thread t=new Thread(new CSSocketHandler(s));

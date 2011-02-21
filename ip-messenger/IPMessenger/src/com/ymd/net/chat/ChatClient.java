@@ -21,6 +21,7 @@ import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GuiIconBlink;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.util.Constants;
 import com.ymd.util.GUID;
 
 /**
@@ -59,7 +60,7 @@ public class ChatClient implements Runnable{
 		try{
 			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
 					IPMessenger.resources.getString("establishingConnWait"));
-			socket=new Socket(ip,1986);						
+			socket=new Socket(ip,Constants.CHAT_CLIENT_PORT);						
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
 			

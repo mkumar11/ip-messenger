@@ -165,8 +165,8 @@ public class IPMessenger {
 			chatServer.start();
 			Thread fileServer=new Thread(new FileServer());
 			fileServer.start();
-			MulticastSocket multicastSoc=new MulticastSocket(1988); 
-			InetAddress group = InetAddress.getByName("225.5.6.4");
+			MulticastSocket multicastSoc=new MulticastSocket(Constants.MAIN_BROADCASTING_PORT); 
+			InetAddress group = InetAddress.getByName(Constants.BROADCASTING_IP);
 			multicastSoc.joinGroup(group);
 			MainGui gi=new MainGui(IPMessenger.resources.getString("ipmessenger"),
 													multicastSoc,group);

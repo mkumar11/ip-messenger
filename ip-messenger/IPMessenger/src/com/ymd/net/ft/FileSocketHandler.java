@@ -193,7 +193,7 @@ public class FileSocketHandler implements Runnable{
 			statusPanel.add(jtf,BorderLayout.CENTER);
 			Style style = doc.addStyle("StyleName", null);
 		    StyleConstants.setComponent(style, statusPanel);
-		    doc.insertString(doc.getLength(), "ignored text"+"\n", style);	
+		    doc.insertString(doc.getLength(), "File Transfer"+"\n", style);	
 		    panels.setStatus(statusPanel);
 		    
 		    JPanel decissionPanel=new JPanel(new GridLayout(1,2,10,10));
@@ -208,7 +208,7 @@ public class FileSocketHandler implements Runnable{
 		    decissionPanel.add(reject);
 		    Style styleDp = doc.addStyle("StyleName", null);
 		    StyleConstants.setComponent(styleDp, decissionPanel);
-		    doc.insertString(doc.getLength(), "ignored text"+"\n", styleDp);
+		    doc.insertString(doc.getLength(), "File Transfer"+"\n", styleDp);
 		    panels.setProgress(decissionPanel);
 		    
 		}catch(BadLocationException ble){
