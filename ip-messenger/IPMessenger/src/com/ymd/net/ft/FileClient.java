@@ -10,8 +10,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
@@ -36,6 +37,7 @@ public class FileClient implements Runnable{
 	private String ip;
 	private String chatId;
 	private StatusPanels panels;
+	private SSLSocketFactory sslsf=(SSLSocketFactory)SSLSocketFactory.getDefault();
  
 	/**
 	 * Constructs the FileClient object.
@@ -52,12 +54,16 @@ public class FileClient implements Runnable{
 
 	@Override
 	public void run() {
-		Socket fileSock=null;
+		SSLSocket fileSock=null;
 		OutputStream socketOs=null;
 		InputStream sockestIs=null;
 		try{			
-			String simpleFileName=file.getName();			
-			fileSock=new Socket(ip,Constants.FILE_CLIENT_PORT);
+			String simpleFileName=file.getName();
+			
+			fileSock= (SSLSocket)sslsf.createSocket(ip,Constants.FILE_CLIENT_PORT);
+			final String[] enabledCipherSuites = { "SSL_DH_anon_WITH_RC4_128_MD5" };
+			fileSock.setEnabledCipherSuites(enabledCipherSuites);			
+			
 			socketOs=fileSock.getOutputStream();
 			sockestIs=fileSock.getInputStream();
 			FileInputStream fis=new FileInputStream(file);

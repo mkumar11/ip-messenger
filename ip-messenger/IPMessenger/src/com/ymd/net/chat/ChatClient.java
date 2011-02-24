@@ -3,10 +3,11 @@ package com.ymd.net.chat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
@@ -37,6 +38,7 @@ public class ChatClient implements Runnable{
 	
 	private String ip;
 	private MainGui mainGui;
+	private SSLSocketFactory sslsf=(SSLSocketFactory)SSLSocketFactory.getDefault();
 	
 	/**
 	 * Constructs ChatClient object.
@@ -52,7 +54,7 @@ public class ChatClient implements Runnable{
 
 	@Override
 	public void run() {
-		Socket socket=null;
+		SSLSocket socket=null;
 		InputStream in=null;
 		OutputStream out=null;
 		ChatGui chat=null;
@@ -60,7 +62,11 @@ public class ChatClient implements Runnable{
 		try{
 			JFrame statusFrame=GUIUtil.displayMessage(mainGui.getX(), mainGui.getY(),
 					IPMessenger.resources.getString("establishingConnWait"));
-			socket=new Socket(ip,Constants.CHAT_CLIENT_PORT);						
+			
+			socket= (SSLSocket)sslsf.createSocket(ip,Constants.CHAT_CLIENT_PORT);
+			final String[] enabledCipherSuites = { "SSL_DH_anon_WITH_RC4_128_MD5" };
+			socket.setEnabledCipherSuites(enabledCipherSuites);
+			
 			in=socket.getInputStream();
 			out=socket.getOutputStream();
 			
