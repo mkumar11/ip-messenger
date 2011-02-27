@@ -96,11 +96,12 @@ public class IPMessenger {
 			//setting up the required Properties.
 			Properties confProps=new Properties();
 			String userHomeDir=System.getProperty("user.home");
-			File dir=new File(userHomeDir+"\\"+Constants.CONF_DIR);
+			File dir=new File(userHomeDir+File.separator+Constants.CONF_DIR);
 			if(!dir.exists()){
 				dir.mkdir();
 			}
-			confFilePath=userHomeDir+"\\"+Constants.CONF_DIR+"\\"+Constants.CONF_FILE_NAME;
+			confFilePath=userHomeDir+File.separator+Constants.CONF_DIR+File.separator
+			+Constants.CONF_FILE_NAME;
 			File confFile=new File(confFilePath);
 			if(!confFile.exists()){
 				try{

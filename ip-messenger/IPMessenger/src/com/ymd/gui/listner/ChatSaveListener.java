@@ -46,7 +46,7 @@ public class ChatSaveListener implements ActionListener{
 		String strDate=df.format(date);			
 		String fileName="IPMChat("+strDate+").txt";
 		String chatsaveLocation=System.getProperty(Constants.CHAT_FILE_DIR_KEY);
-		fileName=chatsaveLocation+"\\"+fileName;
+		fileName=chatsaveLocation+File.separator+fileName;
 		File chatFile=new File(fileName);		
 		FileWriter fw=null;		
 		try{

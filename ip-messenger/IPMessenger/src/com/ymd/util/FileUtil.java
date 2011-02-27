@@ -39,7 +39,7 @@ public class FileUtil {
 	 * modified today
 	 */
 	public static File createNonExistingFile(String simpleName, String dir){            
-        File file=new File(dir+"\\"+simpleName);
+        File file=new File(dir+File.separator+simpleName);
         int value=1;
         if(file.exists()){                      
                 String name=value+"_"+simpleName;
