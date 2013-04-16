@@ -35,17 +35,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import com.ymd.gui.ChatGui;
 import com.ymd.gui.MainGui;
+import com.ymd.gui.chat.ChatGui;
 import com.ymd.gui.listner.ExitActionListener;
 import com.ymd.gui.util.GUIUtil;
-import com.ymd.gui.util.JLogoFrame;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
+import com.ymd.gui.util.JLogoFrame;
 import com.ymd.images.Resource;
 import com.ymd.log.IPMLogger;
+import com.ymd.net.IPMsgServer;
 import com.ymd.net.Packets;
-import com.ymd.net.chat.ChatServer;
-import com.ymd.net.ft.FileServer;
 import com.ymd.util.Constants;
 import com.ymd.util.NetUtil;
 import com.ymd.util.Util;
@@ -70,6 +69,7 @@ public class IPMessenger {
 	public static final List<Image> blinkImages=new ArrayList<Image>();
 	public static ResourceBundle resources;
 	public static String confFilePath;
+	public static MainGui mainGui;
 	
 	//static block which registers the cross look and feel and does
 	//necessary initialization.
@@ -162,19 +162,19 @@ public class IPMessenger {
 		try{			
 			intialCheck();			
 			Map<String,DefaultMutableTreeNode> nodeMap=new HashMap<String,DefaultMutableTreeNode>();
-			Thread chatServer=new Thread(new ChatServer());
-			chatServer.start();
-			Thread fileServer=new Thread(new FileServer());
-			fileServer.start();
+			
+			Thread ipMsgServer=new Thread(new IPMsgServer());
+			ipMsgServer.start();
+			
 			MulticastSocket multicastSoc=new MulticastSocket(Constants.MAIN_BROADCASTING_PORT); 
 			InetAddress group = InetAddress.getByName(Constants.BROADCASTING_IP);
 			multicastSoc.joinGroup(group);
-			MainGui gi=new MainGui(IPMessenger.resources.getString("ipmessenger"),
+			mainGui=new MainGui(IPMessenger.resources.getString("ipmessenger"),
 													multicastSoc,group);
-			registerInSystemTray(gi,multicastSoc,group);
-			JTree mainTree=gi.getMainTree();
+			registerInSystemTray(mainGui,multicastSoc,group);
+			JTree mainTree=mainGui.getMainTree();
 			DefaultTreeModel treeModel=(DefaultTreeModel)mainTree.getModel();
-			DefaultMutableTreeNode top=gi.getTop();					
+			DefaultMutableTreeNode top=mainGui.getTop();					
 			
 			Packets.fireHelloPacket(multicastSoc,group);
 			while(true){

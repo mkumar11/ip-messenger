@@ -23,10 +23,13 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.ymd.gui.ChatGui;
+import com.ymd.gui.chat.ChatGui;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
-import com.ymd.net.ft.FileClient;
+import com.ymd.net.ClientHandler;
+import com.ymd.net.ClientHandlerRunnable;
+import com.ymd.net.ft.FileInfo;
+import com.ymd.util.Constants;
 
 /**
  * Drag and Drop Listener.
@@ -36,7 +39,7 @@ import com.ymd.net.ft.FileClient;
  */
 public class UADNDListener extends DropTargetAdapter{
 	
-	private IPMLogger logger=IPMLogger.getLogger();
+	private static IPMLogger logger=IPMLogger.getLogger();
 	
 	private String ip;
 	private ChatGui chatGui;
@@ -64,14 +67,15 @@ public class UADNDListener extends DropTargetAdapter{
 				List<File> fileList = (List<File>)transferable.getTransferData(DataFlavor.javaFileListFlavor);
 				Iterator<File> iterator = fileList.iterator();
 				while (iterator.hasNext()) {
-					File file = iterator.next();
-					String simpleName=file.getName();
-					StatusPanels panels=displayFTStatusMsg(doc,simpleName);
+					File file = iterator.next();								
 					if(chatGui.isRemoteUserClosed())
-						chatGui.setRemoteUserClosed(false);
+						chatGui.setRemoteUserClosed(false);					
 					chatGui.getMa().setCaretPosition(chatGui.getMa().getDocument().getLength());
-					Thread fileClient=new Thread(new FileClient(ip,file,chatGui.getId(),panels));
-					fileClient.start();					
+					FileInfo fileInfo=new FileInfo(file,chatGui.getId());					
+					ClientHandler clientHandler=new ClientHandler(ip,fileInfo,doc);
+					ClientHandlerRunnable chr=new ClientHandlerRunnable(clientHandler,Constants.FILE_TRANSFER);
+					Thread clientHandlerThr=new Thread(chr);
+					clientHandlerThr.start();									
 				}
 				event.getDropTargetContext().dropComplete(true);
 			} else if (transferable.isDataFlavorSupported (DataFlavor.stringFlavor)){
@@ -98,7 +102,7 @@ public class UADNDListener extends DropTargetAdapter{
 	 * @param simpleFileName - file name with which this is associated to.
 	 * @return StatusPanels
 	 */
-	private StatusPanels displayFTStatusMsg(StyledDocument doc,String simpleFileName){
+	public static StatusPanels displayFTStatusMsg(StyledDocument doc,String simpleFileName){
 		StatusPanels panels=new StatusPanels();
 		SimpleAttributeSet bold=new SimpleAttributeSet();
 		StyleConstants.setBold(bold, true);

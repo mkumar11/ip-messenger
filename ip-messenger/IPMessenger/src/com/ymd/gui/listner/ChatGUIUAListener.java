@@ -6,7 +6,7 @@ package com.ymd.gui.listner;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -15,9 +15,10 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-import com.ymd.gui.ChatGui;
+import com.ymd.gui.chat.ChatGui;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.net.chat.ChatMessage;
 
 /**
  * This is the Listener Class for chat window's 
@@ -61,13 +62,13 @@ public class ChatGUIUAListener extends KeyAdapter{
 			}catch(BadLocationException ble){
 				logger.error(ble.getMessage(), ble);
 			}			
-			OutputStream out=chatGui.getOut();
+			ObjectOutputStream oos=chatGui.getSockInfo().getSocketOOS();			
 			try{
 				if(chatGui.isRemoteUserClosed()){
 					chatGui.setRemoteUserClosed(false);					
 				}
-				out.write(messageTobeSent.getBytes());
-				out.write(-2);
+				ChatMessage msg=new ChatMessage(messageTobeSent);
+				oos.writeObject(msg);				
 			}catch(IOException ioe){
 				try{
 					String msg=IPMessenger.resources.getString("userNotOnline");

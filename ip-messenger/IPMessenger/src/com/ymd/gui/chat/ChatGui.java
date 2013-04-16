@@ -1,4 +1,4 @@
-package com.ymd.gui;
+package com.ymd.gui.chat;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -6,9 +6,6 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -28,6 +25,9 @@ import com.ymd.gui.util.GUIUtil;
 import com.ymd.gui.util.GUIUtil.CompCenterCords;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.net.Event;
+import com.ymd.net.SocketInfo;
+import com.ymd.util.Constants;
 
 /**
  * This is the GUI class for chat window.
@@ -38,12 +38,12 @@ import com.ymd.main.IPMessenger;
 public class ChatGui extends JFrame {
 	
 	private static final long serialVersionUID = 4942132120249803370L;
-	private IPMLogger logger=IPMLogger.getLogger();
+	protected IPMLogger logger=IPMLogger.getLogger();
 	
 	/**
 	 * Main Area associated with this chat window.
 	 */
-	private JTextPane ma;
+	protected JTextPane ma;
 	
 	/**
 	 * User area associated with this chat window.
@@ -53,36 +53,39 @@ public class ChatGui extends JFrame {
 	/**
 	 * Unique id for this chat window.
 	 */
-	private String id;
+	protected String id;
 	
-	/**
-	 * OutputStream associated with this chat window.
-	 */
-	private OutputStream out;
 	
 	/**
 	 * User Name with whom the chat is happening.
 	 */
-	private String remoteUserName;
+	protected String remoteUserName;
 	
 	/**
 	 * Remote user chat window status.
 	 */
-	private boolean remoteUserClosed=true;
+	private boolean remoteUserClosed=true;	
 	
 	
+	/**
+	 * This contains socket info.
+	 */
+	private SocketInfo sockInfo; 	
+	
+	/**
+	 * Default constructor which does nothing.
+	 */
+	public ChatGui(){
+		
+	}
 	/**
 	 * Constructor which configures the main properties 
 	 * and creates the required GUI.
 	 * @param title
 	 * @param out
 	 */
-	public ChatGui(final Socket socket){
-		try{
-			out=socket.getOutputStream();
-		}catch(IOException ioe){			
-			logger.error(ioe.getMessage(), ioe);
-		}		
+	public ChatGui(final SocketInfo sockInfo){
+		this.sockInfo=sockInfo;
 		Container dp=getContentPane();
 		dp.setLayout(new BorderLayout());		
 		JSplitPane jsp=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -91,19 +94,18 @@ public class ChatGui extends JFrame {
 		addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				try{
-					out.write(-1);
+					sockInfo.getSocketOOS().writeObject(new Event(Constants.EVENT_WINDOW_CLOSED));
 				}catch(IOException ioe){
 					logger.error(ioe.getMessage(), ioe);
 				}
-				if(remoteUserClosed){
-					thisChat.dispose();
-					InetAddress remoteUserAdd=socket.getInetAddress();
-					String ip=remoteUserAdd.getHostAddress();
+				if(remoteUserClosed){					
+					thisChat.dispose();					
+					String ip=sockInfo.getRemoteIP();
 					try{
-						out.close();
-						socket.close();
+						sockInfo.getSocketOOS().close();
+						sockInfo.getSocketOIS().close();						
 					}catch(IOException ioe){
-						logger.error(ioe.getMessage(), ioe);
+						logger.error(ioe.getMessage(),ioe);
 					}
 					List<String> chatIds=IPMessenger.ipChatGuiIdMap.get(ip);
 					chatIds.remove(id);
@@ -125,7 +127,7 @@ public class ChatGui extends JFrame {
 		ua.setLineWrap(true);
 		ua.setWrapStyleWord(true);
 		ua.addKeyListener(new ChatGUIUAListener(this));
-		new DropTarget(ua,new UADNDListener(socket.getInetAddress().getHostAddress(),this));
+		new DropTarget(ua,new UADNDListener(sockInfo.getRemoteIP(),this));
 		JScrollPane jspua=new JScrollPane(ua);		
 		jspua.setBounds(0, 300, 250, 100);	
 		jsp.add(jspua,JSplitPane.BOTTOM);
@@ -147,11 +149,9 @@ public class ChatGui extends JFrame {
 		CompCenterCords cords=GUIUtil.getCompCenterCords(260, 450);
 		setLocation(cords.getX(), cords.getY());
 		
-	}
+	}	
 	
 	
-	
-
 	public JTextPane getMa() {
 		return ma;
 	}
@@ -159,12 +159,6 @@ public class ChatGui extends JFrame {
 	public JTextArea getUa() {
 		return ua;
 	}	
-
-	public OutputStream getOut() {
-		return out;
-	}
-
-
 
 
 	public String getId() {
@@ -208,5 +202,13 @@ public class ChatGui extends JFrame {
 	public void setRemoteUserClosed(boolean remoteUserClosed) {
 		this.remoteUserClosed = remoteUserClosed;
 	}
+
+	
+	/**
+	 * @return the sockInfo
+	 */
+	public SocketInfo getSockInfo() {
+		return sockInfo;
+	}	
 		
 }
