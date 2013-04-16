@@ -71,8 +71,8 @@ public class MainGui extends JFrame{
 		setContentPane(dp);			
 		ImageIcon icon=new ImageIcon(IPMessenger.iconUrl);
 		setIconImage(icon.getImage());				
-		setSize(200, 550);
-		CompCenterCords cords=GUIUtil.getCompCenterCords(200, 550);
+		setSize(270, 550);
+		CompCenterCords cords=GUIUtil.getCompCenterCords(270, 550);
 		setLocation(cords.getX(), cords.getY());
 		
 		JMenu exitMenu=new JMenu(IPMessenger.resources.getString("exit"));
