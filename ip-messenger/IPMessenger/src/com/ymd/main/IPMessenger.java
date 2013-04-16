@@ -169,8 +169,7 @@ public class IPMessenger {
 			MulticastSocket multicastSoc=new MulticastSocket(Constants.MAIN_BROADCASTING_PORT); 
 			InetAddress group = InetAddress.getByName(Constants.BROADCASTING_IP);
 			multicastSoc.joinGroup(group);
-			mainGui=new MainGui(IPMessenger.resources.getString("ipmessenger"),
-													multicastSoc,group);
+			mainGui=new MainGui(IPMessenger.resources.getString("ipmessenger"),multicastSoc,group);
 			registerInSystemTray(mainGui,multicastSoc,group);
 			JTree mainTree=mainGui.getMainTree();
 			DefaultTreeModel treeModel=(DefaultTreeModel)mainTree.getModel();
