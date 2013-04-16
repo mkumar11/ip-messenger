@@ -42,8 +42,15 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 	        Object obj=node.getUserObject();
 	        String ip=null;
 	        if(obj instanceof String)
-	        	ip = (String)obj;	        
-	        ImageIcon nodeImg=new ImageIcon(Dummy.class.getResource("node.png"));	        
+	        	ip = (String)obj;
+	        ImageIcon nodeImg=null;
+	        if(node.isRoot()){
+	        	nodeImg=new ImageIcon(Dummy.class.getResource("root.png"));
+	        }else if(node.isLeaf()){
+	        	nodeImg=new ImageIcon(Dummy.class.getResource("leaf.png"));	
+	        }else{
+	        	nodeImg=new ImageIcon(Dummy.class.getResource("node.png"));	
+	        }
         	label.setIcon(nodeImg);
 	        label.setText(ip);
 	        label.setToolTipText("Click On IP To Establish Connection");
