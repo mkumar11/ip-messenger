@@ -63,7 +63,8 @@ public class MainGui extends JFrame{
 		
 		
 		top =new DefaultMutableTreeNode(IPMessenger.resources.getString("mainGuiOnlineSystems"));		
-		mainTree=new JTree(top);		
+		mainTree=new JTree(top);
+		mainTree.setCellRenderer(new CustomTreeCellRenderer());
 		mainTree.addMouseListener(new JTreeMouseListener(this));
 		JScrollPane mtsp=new JScrollPane(mainTree);
 		dp.add(mtsp,BorderLayout.CENTER);
