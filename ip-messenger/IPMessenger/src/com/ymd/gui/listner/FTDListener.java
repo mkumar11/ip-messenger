@@ -8,7 +8,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -16,6 +15,8 @@ import javax.swing.JTextField;
 
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
+import com.ymd.net.SocketInfo;
+import com.ymd.net.ft.FTDecision;
 
 /**
  * This is File Transfer Decision Listener Class.
@@ -29,7 +30,7 @@ public class FTDListener implements ActionListener{
 	
 	private JPanel statusPanel;
 	private JPanel decissionPanel;
-	private OutputStream assocFsOs;
+	private SocketInfo sockInfo;
 	
 	/**
 	 * Constructs FTDListener instance.
@@ -38,14 +39,15 @@ public class FTDListener implements ActionListener{
 	 * @param decissionPanel
 	 * @param assocFsOs
 	 */
-	public FTDListener(JPanel statusPanel,JPanel decissionPanel,OutputStream assocFsOs){
+	public FTDListener(JPanel statusPanel,JPanel decissionPanel,SocketInfo sockInfo){
 		this.statusPanel=statusPanel;
 		this.decissionPanel=decissionPanel;
-		this.assocFsOs=assocFsOs;
+		this.sockInfo=sockInfo;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
+		FTDecision ftDecession=null;
 		String actionCmd=event.getActionCommand();
 		Component[] statusComponents=statusPanel.getComponents();
 		JTextField status=(JTextField)statusComponents[0];
@@ -54,18 +56,19 @@ public class FTDListener implements ActionListener{
 			decissionPanel.remove(comp);
 		}
 		
-		if(actionCmd.equalsIgnoreCase("accept")){			
+		if(actionCmd.equalsIgnoreCase("accept")){
+			ftDecession=new FTDecision(true);
 			status.setText(IPMessenger.resources.getString("progressFT"));
 			JProgressBar jpb=new JProgressBar() ;			
 			decissionPanel.setLayout(new BorderLayout());
 			decissionPanel.add(jpb, BorderLayout.CENTER);
 			
 		}else if(actionCmd.equalsIgnoreCase("reject")){
+			ftDecession=new FTDecision(false);
 			status.setText(IPMessenger.resources.getString("rejectedByMeFT"));			
 		}
 		try{
-			assocFsOs.write(actionCmd.getBytes());
-			assocFsOs.write(-2);
+			sockInfo.getSocketOOS().writeObject(ftDecession);
 		}catch(IOException ioe){
 			logger.error(ioe.getMessage(), ioe);
 		}

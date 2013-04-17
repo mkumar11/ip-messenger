@@ -114,7 +114,7 @@ public class ServerChatHandler implements Runnable{
 				}
 			}			
 		}catch(IOException ioe){
-			logger.info("Thread gracefully closed.");			
+			logger.info("Server Chat Thread gracefully closed.");			
 		}finally{
 			try{
 				chat.dispose();

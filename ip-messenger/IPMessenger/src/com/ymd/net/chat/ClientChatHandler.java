@@ -118,7 +118,7 @@ public class ClientChatHandler implements Runnable{
 			}// End of While Loop
 		}catch(IOException ioe){
 			logger.error(ioe.getMessage(),ioe);			
-			logger.info("Thread gracefully closed.");			
+			logger.info("Client Chat Thread gracefully closed.");			
 		}finally{
 			try{	
 				chat.dispose();

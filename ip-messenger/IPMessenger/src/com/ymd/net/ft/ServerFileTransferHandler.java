@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
@@ -22,6 +23,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import com.ymd.gui.chat.ChatGui;
+import com.ymd.gui.listner.FTDListener;
 import com.ymd.gui.util.GuiIconBlink;
 import com.ymd.log.IPMLogger;
 import com.ymd.main.IPMessenger;
@@ -64,7 +66,7 @@ public class ServerFileTransferHandler implements Runnable{
                 associatedChatGui.setVisible(true);
 	        String dir=System.getProperty(Constants.DOWNLOAD_FILE_DIR_KEY);
 	        File file=FileUtil.createNonExistingFile(fileInfo.getFile().getName(),dir);
-	        panels=dispalyFTIntializationMsg(fileInfo.getFile().getName());
+	        panels=dispalyFTIntializationMsg(fileInfo.getFile().getName(),sockInfo);
 	        associatedChatGui.getMa().setCaretPosition(associatedChatGui.getMa()
 	        		.getDocument().getLength()); 
 	        if(!associatedChatGui.isFocused()){
@@ -74,54 +76,58 @@ public class ServerFileTransferHandler implements Runnable{
 					blinkThread.start();
 				}
 			}
-	        JProgressBar jpb=null;
-	        JPanel progressPanel=panels.getProgress();
-			Component[] ppComps=progressPanel.getComponents();
-			jpb=(JProgressBar)ppComps[0];						
-			Long fileSizeVal=fileInfo.getFile().length();
-			Long maxRough=fileSizeVal/3000;
-			int max=0;
-			if(maxRough > 0 && (fileSizeVal%3000) != 0)
-				max=maxRough.intValue()+1;
-			else
-				max=maxRough.intValue();			
-			if(max == 0)
-				jpb.setMaximum(1);
-			else
-				jpb.setMaximum(max);
-			
-			FileOutputStream fos=new FileOutputStream(file);
-			bos=new BufferedOutputStream(fos);
-			int count=1;
-			while(true){
-				try{
-				Object obj=sockInfo.getSocketOIS().readObject();
-				if(obj instanceof FileMultiPart){
-					FileMultiPart filePart=(FileMultiPart)obj;
-					if(filePart.isLastPart())
-						break;
-					byte[] partBytes=filePart.getFilePart();
-					bos.write(partBytes);
-					jpb.setValue(count);
-					count=count+1;					
+	        Object obj=sockInfo.getSocketOIS().readObject();
+	        if(obj instanceof FileMultiPart){
+		        JProgressBar jpb=null;
+		        JPanel progressPanel=panels.getProgress();
+				Component[] ppComps=progressPanel.getComponents();
+				jpb=(JProgressBar)ppComps[0];						
+				Long fileSizeVal=fileInfo.getFile().length();
+				Long maxRough=fileSizeVal/3000;
+				int max=0;
+				if(maxRough > 0 && (fileSizeVal%3000) != 0)
+					max=maxRough.intValue()+1;
+				else
+					max=maxRough.intValue();			
+				if(max == 0)
+					jpb.setMaximum(1);
+				else
+					jpb.setMaximum(max);
+				
+				FileOutputStream fos=new FileOutputStream(file);
+				bos=new BufferedOutputStream(fos);
+				int count=1;
+				while(true){					
+					if(obj instanceof FileMultiPart){
+						FileMultiPart filePart=(FileMultiPart)obj;
+						if(filePart.isLastPart())
+							break;
+						byte[] partBytes=filePart.getFilePart();
+						bos.write(partBytes);
+						jpb.setValue(count);
+						count=count+1;					
+					}
+					obj=sockInfo.getSocketOIS().readObject();					
 				}
-				}catch(ClassNotFoundException cnfe){
-					logger.error(cnfe.getMessage(), cnfe);
-				}
-			}
-			JPanel status=panels.getStatus();
-			Component[] statusComps=status.getComponents();
-			JTextField statustf=(JTextField)statusComps[0];
-			statustf.setText(IPMessenger.resources.getString("completedFT"));
+				JPanel status=panels.getStatus();
+				Component[] statusComps=status.getComponents();
+				JTextField statustf=(JTextField)statusComps[0];
+				statustf.setText(IPMessenger.resources.getString("completedFT"));
+	        }
 		}catch(IOException ioe){
 			logger.error(ioe.getMessage(), ioe);			
+		}catch(ClassNotFoundException cnfe){
+			logger.error(cnfe.getMessage(), cnfe);
 		}finally{
 			try{
-				bos.flush();
-				bos.close();
+				if(bos != null){
+					bos.flush();
+					bos.close();
+				}
 				sockInfo.getSocketOIS().close();
 				sockInfo.getSocketOOS().close();
 				sockInfo.getSocket().close();
+				logger.info("Server File Transfer Thread gracefully closed.");
 			}catch(IOException ioe){
 				logger.error(ioe.getMessage(), ioe);
 			}
@@ -136,7 +142,7 @@ public class ServerFileTransferHandler implements Runnable{
 	 * @param fsOutputStream - associated socket OutputStream.
 	 * @return StatusPanels.
 	 */
-	private StatusPanels dispalyFTIntializationMsg(String fileSimpleName){	
+	private StatusPanels dispalyFTIntializationMsg(String fileSimpleName,SocketInfo sockInfo){	
 		StatusPanels panels=new StatusPanels();
 		SimpleAttributeSet bold=new SimpleAttributeSet();
 		StyleConstants.setBold(bold, true);
@@ -154,12 +160,17 @@ public class ServerFileTransferHandler implements Runnable{
 		    panels.setStatus(statusPanel);
 		    
 		    JPanel decissionPanel=new JPanel(new GridLayout(1,2,10,10));
-		    jtf.setText(IPMessenger.resources.getString("progressFT"));
-			JProgressBar jpb=new JProgressBar() ;			
-			decissionPanel.setLayout(new BorderLayout());
-			decissionPanel.add(jpb, BorderLayout.CENTER);		    
-		    Style styleDp = doc.addStyle("StyleName", null);
-		    StyleConstants.setComponent(styleDp, decissionPanel);
+		    FTDListener ftdLstener=new FTDListener(statusPanel,decissionPanel,sockInfo);
+		    JButton accept=new JButton(IPMessenger.resources.getString("ftdPannelAccept"));     
+            accept.setActionCommand("accept");
+            accept.addActionListener(ftdLstener);
+            JButton reject=new JButton(IPMessenger.resources.getString("ftdPannelReject"));
+            reject.setActionCommand("reject");
+            reject.addActionListener(ftdLstener);
+            decissionPanel.add(accept);
+            decissionPanel.add(reject);
+            Style styleDp = doc.addStyle("StyleName", null);
+            StyleConstants.setComponent(styleDp, decissionPanel);		    
 		    doc.insertString(doc.getLength(), "File Transfer"+"\n", styleDp);
 		    panels.setProgress(decissionPanel);			    
 		}catch(BadLocationException ble){
